@@ -1288,16 +1288,34 @@ section { padding: var(--space-5xl) 0; position: relative; }
   .nav-inner { padding:0 var(--space-md); }
 
   /* 언어 드롭다운 모바일 */
+  /*
   .lang-current, .lang-chevron { display:none; }
   .lang-trigger {
     padding:8px; min-width:44px; min-height:44px; justify-content:center;
   }
   .lang-globe-icon { width:20px; height:20px; }
   .lang-panel { right:-8px; min-width:190px; }
+*/
+  /* 언어 드롭다운 모바일 */
+  .lang-current, .lang-chevron { display:none; }
+  .lang-trigger {
+    padding:8px; min-width:44px; min-height:44px; justify-content:center;
+  }
+  .lang-globe-icon { width:20px; height:20px; }
+  .lang-panel { right:0; min-width:190px; }
 
+  /* 네비 오른쪽 정렬 */
+  .nav-right { gap:4px; }
+
+    /* 히어로 eyebrow 모바일 */
+  .hero-eyebrow-wrap { gap:var(--space-sm); }
+  .hero-eyebrow-line { width:20px; }
+  .hero-eyebrow { font-size:0.65rem; letter-spacing:2px; }
+  
   /* ---- 히어로 모바일 ---- */
   #section-hero { min-height:100vh; min-height:100dvh; }
 
+  
   .hero-content {
     padding-top:calc(var(--nav-height) + var(--space-xl));
     padding-bottom:var(--space-xl);
@@ -1321,6 +1339,7 @@ section { padding: var(--space-5xl) 0; position: relative; }
   .hero-scroll-indicator { display:none; }
 
   /* 씬 카드 — 모바일 축소 */
+/*
   .scene-card { padding:8px 14px; }
   .scene-card span { font-size:0.7rem; }
   .scene-card svg { width:16px; height:16px; }
@@ -1328,6 +1347,11 @@ section { padding: var(--space-5xl) 0; position: relative; }
   .scene-card-2 { top:12%; right:3%; }
   .scene-card-3 { bottom:32%; left:2%; }
   .scene-card-4 { bottom:25%; right:2%; }
+*/
+  .scene-card { display:none; }
+
+  .scene-node { display:none; }
+  .connection-lines { opacity:0.3; }
 
   .scene-node { display:none; }
   .connection-lines { opacity:0.5; }
