@@ -334,7 +334,7 @@ function initContactForm() {
     var originalText = submitBtn.textContent;
 
     if (submitBtn.disabled) return;
-    
+
     // 현재 언어를 폼에 반영
     var langField = document.getElementById("form-lang");
     if (langField) langField.value = currentLang;
@@ -362,6 +362,7 @@ function initContactForm() {
       body: new FormData(form),
       headers: { "Accept": "application/json" }
     })
+
     .then(function(response) {
       if (response.ok) {
         showFormMessage("success");
@@ -374,10 +375,16 @@ function initContactForm() {
               return err.message;
             }).join(", ");
           }
-          showFormMessage("error", detail);
+          // 파일 관련 안내는 별도 처리
+          if (data.error === "File too large" || data.error === "Invalid file type") {
+            showFormMessage("warning", detail);
+          } else {
+            showFormMessage("error", detail);
+          }
         });
       }
     })
+
     .catch(function(err) {
       console.error("Form submission error:", err);
       showFormMessage("error");
@@ -398,19 +405,23 @@ function showFormMessage(type, detail) {
   msg.className = "form-result-message form-result-" + type;
 
   if (type === "success") {
-    msg.innerHTML = ({
-      en: '✅ <strong>Thank you!</strong> We received your inquiry and will respond within 1 business day.',
-      ko: '✅ <strong>감사합니다!</strong> 문의가 접수되었습니다. 1영업일 내에 회신드리겠습니다.',
-      zh: '✅ <strong>谢谢！</strong> 我们已收到您的咨询，将在1个工作日内回复。'
-    })[currentLang] || '✅ Thank you!';
-  } else {
-    var errorMsg = ({
-      en: '❌ <strong>Something went wrong.</strong> Please email us at <a href="mailto:contact@nexthub.me" style="color:inherit;text-decoration:underline;">contact@nexthub.me</a>',
-      ko: '❌ <strong>전송에 실패했습니다.</strong> <a href="mailto:contact@nexthub.me" style="color:inherit;text-decoration:underline;">contact@nexthub.me</a>로 직접 보내주세요.',
-      zh: '❌ <strong>发送失败。</strong> 请发邮件至 <a href="mailto:contact@nexthub.me" style="color:inherit;text-decoration:underline;">contact@nexthub.me</a>'
-    })[currentLang] || '❌ Something went wrong.';
+    msg.innerHTML = CONTENT[currentLang]["form_success"]
+      || '✅ <strong>Thank you!</strong> We received your inquiry and will respond within 1 business day.';
 
-    msg.innerHTML = errorMsg;
+  } else if (type === "warning") {
+    // detail에 따라 적절한 메시지 선택
+    var warnKey = "form_warn_default";
+    if (detail && detail.indexOf("10MB") >= 0) {
+      warnKey = "form_warn_file_size";
+    } else if (detail && (detail.indexOf("file type") >= 0 || detail.indexOf("Allowed") >= 0)) {
+      warnKey = "form_warn_file_type";
+    }
+    msg.innerHTML = CONTENT[currentLang][warnKey]
+      || '⚠️ <strong>Please check your file.</strong>';
+
+  } else {
+    msg.innerHTML = CONTENT[currentLang]["form_error"]
+      || '❌ <strong>Something went wrong.</strong> Please email us at <a href="mailto:contact@nexthub.me" style="color:inherit;text-decoration:underline;">contact@nexthub.me</a>';
     if (detail) {
       msg.innerHTML += '<br><small style="opacity:0.7">' + detail + '</small>';
     }

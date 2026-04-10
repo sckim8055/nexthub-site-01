@@ -347,6 +347,11 @@ const CONTENT = {
     form_file_note: "Max 10MB. PDF, DOC, XLS, PPT, Images, TXT, ZIP",
     form_submit: "Send Inquiry",
     form_note: "🔒 Your information is confidential. We respond within 1 business day.",
+    form_success: '✅ <strong>Thank you!</strong> We received your inquiry and will respond within 1 business day.',
+    form_error: '❌ <strong>Something went wrong.</strong> Please email us at <a href="mailto:contact@nexthub.me" style="color:inherit;text-decoration:underline;">contact@nexthub.me</a>',
+    form_warn_file_size: "⚠️ <strong>File size must be under 10MB.</strong> Please select a smaller file.",
+    form_warn_file_type: "⚠️ <strong>This file type is not supported.</strong> Allowed: PDF, DOC, XLS, PPT, Images, TXT, ZIP",
+    form_warn_default: "⚠️ <strong>Please check your file.</strong>",
 
     // 직접 연락처
     contact_direct_title: "Prefer to reach us directly?",
@@ -686,6 +691,11 @@ const CONTENT = {
     form_file_note: "최대 10MB. PDF, DOC, XLS, PPT, 이미지, TXT, ZIP",
     form_submit: "문의 보내기",
     form_note: "🔒 보내주신 정보는 안전하게 관리됩니다. 1영업일 내 회신드립니다.",
+    form_success: '✅ <strong>감사합니다!</strong> 문의가 접수되었습니다. 1영업일 내에 회신드리겠습니다.',
+    form_error: '❌ <strong>전송에 실패했습니다.</strong> <a href="mailto:contact@nexthub.me" style="color:inherit;text-decoration:underline;">contact@nexthub.me</a>로 직접 보내주세요.',
+    form_warn_file_size: "⚠️ <strong>파일 크기는 10MB 이하여야 합니다.</strong> 더 작은 파일을 선택해 주세요.",
+    form_warn_file_type: "⚠️ <strong>지원하지 않는 파일 형식입니다.</strong> PDF, DOC, XLS, PPT, 이미지, TXT, ZIP만 가능합니다.",
+    form_warn_default: "⚠️ <strong>파일을 확인해 주세요.</strong>",
 
     contact_direct_title: "직접 연락하고 싶으신가요?",
     contact_email_label: "비즈니스 문의",
@@ -1024,7 +1034,12 @@ const CONTENT = {
     form_file_note: "最大10MB。PDF、DOC、XLS、PPT、图片、TXT、ZIP",
     form_submit: "提交咨询",
     form_note: "🔒 您的信息将严格保密。我们在1个工作日内回复。",
-
+    form_success: '✅ <strong>谢谢！</strong> 我们已收到您的咨询，将在1个工作日内回复。',
+    form_error: '❌ <strong>发送失败。</strong> 请发邮件至 <a href="mailto:contact@nexthub.me" style="color:inherit;text-decoration:underline;">contact@nexthub.me</a>',
+    form_warn_file_size: "⚠️ <strong>文件大小不能超过10MB。</strong> 请选择较小的文件。",
+    form_warn_file_type: "⚠️ <strong>不支持此文件格式。</strong> 仅支持：PDF、DOC、XLS、PPT、图片、TXT、ZIP",
+    form_warn_default: "⚠️ <strong>请检查您的文件。</strong>",
+    
     contact_direct_title: "想直接联系我们？",
     contact_email_label: "商务咨询",
     contact_phone_label: "办公电话",

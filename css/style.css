@@ -1540,3 +1540,8 @@ section { padding: var(--space-5xl) 0; position: relative; }
   color: var(--color-text-dark-gray);
   margin-top: 6px;
 }
+.form-result-warning {
+  background: rgba(234, 179, 8, 0.08);
+  border: 1px solid rgba(234, 179, 8, 0.2);
+  color: #eab308;
+}
