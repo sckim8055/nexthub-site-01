@@ -343,6 +343,8 @@ const CONTENT = {
     form_size_3: "51 – 200 employees",
     form_size_4: "200+ employees",
     form_message: "How can we help?",
+    form_attachment: "Attachment (Optional)",
+    form_file_note: "Max 10MB. PDF, DOC, XLS, PPT, Images, TXT, ZIP",
     form_submit: "Send Inquiry",
     form_note: "🔒 Your information is confidential. We respond within 1 business day.",
 
@@ -680,6 +682,8 @@ const CONTENT = {
     form_size_3: "51~200명",
     form_size_4: "200명 이상",
     form_message: "어떤 도움이 필요하신가요?",
+    form_attachment: "첨부파일 (선택사항)",
+    form_file_note: "최대 10MB. PDF, DOC, XLS, PPT, 이미지, TXT, ZIP",
     form_submit: "문의 보내기",
     form_note: "🔒 보내주신 정보는 안전하게 관리됩니다. 1영업일 내 회신드립니다.",
 
@@ -1016,6 +1020,8 @@ const CONTENT = {
     form_size_3: "51-200人",
     form_size_4: "200人以上",
     form_message: "我们能怎么帮到您？",
+    form_attachment: "附件（可选）",
+    form_file_note: "最大10MB。PDF、DOC、XLS、PPT、图片、TXT、ZIP",
     form_submit: "提交咨询",
     form_note: "🔒 您的信息将严格保密。我们在1个工作日内回复。",
 
