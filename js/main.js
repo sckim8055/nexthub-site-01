@@ -334,6 +334,10 @@ function initContactForm() {
     var originalText = submitBtn.textContent;
 
     if (submitBtn.disabled) return;
+    
+    // 현재 언어를 폼에 반영
+    var langField = document.getElementById("form-lang");
+    if (langField) langField.value = currentLang;
 
     submitBtn.disabled = true;
     submitBtn.style.opacity = "0.7";
