@@ -1,14 +1,15 @@
 /* ================================================================
-   main.js — NextHub (Adobe Redesign v2)
+   main.js — NextHub (Autodesk Redesign)
    ================================================================ */
 
 var currentLang = "en";
 
-var LANG_NAMES = { en:"English", ko:"한국어", zh:"中文" };
+var LANG_NAMES = { en:"EN", ko:"KO", zh:"ZH" };
+var LANG_FULL_NAMES = { en:"English", ko:"한국어", zh:"中文" };
 
 
 /* ================================================================
-   1. 언어 전환 (Autodesk 드롭다운)
+   1. 언어 전환
    ================================================================ */
 function switchLanguage(lang) {
   if (!CONTENT[lang]) return;
@@ -111,24 +112,34 @@ function initNavScroll() {
 }
 
 function initActiveMenu() {
-  var navLinks = document.querySelectorAll(".nav-links a[href^='#section']");
-  var sections = [];
+  /* 데스크탑 + 모바일 모든 nav 링크 */
+  var desktopLinks = document.querySelectorAll(".nav-links a[href^='#section']");
+  var mobileLinks = document.querySelectorAll(".nav-mobile-links a[href^='#section']");
+  var allLinks = [].concat(
+    Array.prototype.slice.call(desktopLinks),
+    Array.prototype.slice.call(mobileLinks)
+  );
 
-  navLinks.forEach(function(link) {
+  var sections = [];
+  desktopLinks.forEach(function(link) {
     var s = document.querySelector(link.getAttribute("href"));
-    if (s) sections.push({ link:link, section:s });
+    if (s) sections.push({ section:s, href:link.getAttribute("href") });
   });
 
   var observer = new IntersectionObserver(function(entries) {
     entries.forEach(function(entry) {
       if (entry.isIntersecting) {
-        navLinks.forEach(function(l) { l.classList.remove("active"); });
+        allLinks.forEach(function(l) { l.classList.remove("active"); });
         sections.forEach(function(item) {
-          if (item.section === entry.target) item.link.classList.add("active");
+          if (item.section === entry.target) {
+            allLinks.forEach(function(l) {
+              if (l.getAttribute("href") === item.href) l.classList.add("active");
+            });
+          }
         });
       }
     });
-  }, { rootMargin:"-72px 0px -50% 0px", threshold:0 });
+  }, { rootMargin:"-80px 0px -50% 0px", threshold:0 });
 
   sections.forEach(function(item) { observer.observe(item.section); });
 }
@@ -136,6 +147,8 @@ function initActiveMenu() {
 function initHamburger() {
   var hamburger = document.getElementById("nav-hamburger");
   var overlay = document.getElementById("nav-overlay");
+
+  if (!hamburger || !overlay) return;
 
   hamburger.addEventListener("click", function() {
     var isOpen = hamburger.classList.toggle("open");
@@ -155,7 +168,21 @@ function initHamburger() {
 
 
 /* ================================================================
-   3. 부드러운 스크롤 (모든 앵커링크)
+   3. 메가메뉴 (데스크탑)
+   ================================================================ */
+function initMegaMenu() {
+  /* 메가메뉴 내 링크 클릭 시 메뉴 닫기 */
+  document.querySelectorAll(".mega-link, .mega-cta-card a").forEach(function(link) {
+    link.addEventListener("click", function() {
+      /* hover 기반이므로 강제 blur */
+      this.closest(".nav-item").querySelector("a").blur();
+    });
+  });
+}
+
+
+/* ================================================================
+   4. 부드러운 스크롤
    ================================================================ */
 function initSmoothScroll() {
   document.querySelectorAll('a[href^="#"]').forEach(function(link) {
@@ -187,7 +214,7 @@ function initSmoothScroll() {
 
 
 /* ================================================================
-   4. 숫자 카운터
+   5. 숫자 카운터
    ================================================================ */
 function initCounters() {
   var section = document.getElementById("section-metrics");
@@ -219,7 +246,7 @@ function initCounters() {
 
 
 /* ================================================================
-   5. FAQ 아코디언
+   6. FAQ 아코디언
    ================================================================ */
 function initFAQ() {
   document.querySelectorAll(".faq-item").forEach(function(item) {
@@ -233,7 +260,7 @@ function initFAQ() {
 
 
 /* ================================================================
-   6. 스크롤 등장 (스태거)
+   7. 스크롤 등장
    ================================================================ */
 function initScrollReveal() {
   var observer = new IntersectionObserver(function(entries) {
@@ -257,7 +284,7 @@ function initScrollReveal() {
 
 
 /* ================================================================
-   7. 맨 위로 버튼
+   8. 맨 위로 버튼
    ================================================================ */
 function initScrollTop() {
   var btn = document.getElementById("scroll-top-btn");
@@ -274,7 +301,7 @@ function initScrollTop() {
 
 
 /* ================================================================
-   8. 모바일 Sticky CTA
+   9. 모바일 Sticky CTA
    ================================================================ */
 function initMobileStickyCTA() {
   var cta = document.getElementById("mobile-sticky-cta");
@@ -294,7 +321,7 @@ function initMobileStickyCTA() {
 
 
 /* ================================================================
-   9. 문의 폼 — Formspree AJAX
+   10. 문의 폼 — Cloudflare Email 대응 준비
    ================================================================ */
 function initContactForm() {
   var form = document.getElementById("contact-form");
@@ -306,10 +333,8 @@ function initContactForm() {
     var submitBtn = form.querySelector('button[type="submit"]');
     var originalText = submitBtn.textContent;
 
-    /* 중복 전송 방지 */
     if (submitBtn.disabled) return;
 
-    /* 로딩 상태 */
     submitBtn.disabled = true;
     submitBtn.style.opacity = "0.7";
     submitBtn.textContent = ({
@@ -318,8 +343,17 @@ function initContactForm() {
       zh: "发送中..."
     })[currentLang] || "Sending...";
 
-    /* Formspree로 AJAX 전송 */
-    fetch(form.action, {
+    /* 
+     * Cloudflare Workers를 이용한 이메일 전송
+     * 아래 URL을 Cloudflare Worker 엔드포인트로 교체하세요.
+     * 현재는 Formspree를 fallback으로 사용합니다.
+     * 
+     * Cloudflare Worker 예시 URL:
+     * https://your-worker.your-subdomain.workers.dev/send-email
+     */
+    var endpoint = form.action; /* Cloudflare Worker URL로 교체 가능 */
+
+    fetch(endpoint, {
       method: "POST",
       body: new FormData(form),
       headers: { "Accept": "application/json" }
@@ -352,11 +386,7 @@ function initContactForm() {
   });
 }
 
-/**
- * 폼 전송 결과 메시지 표시
- */
 function showFormMessage(type, detail) {
-  /* 기존 메시지 제거 */
   var existing = document.querySelector(".form-result-message");
   if (existing) existing.remove();
 
@@ -382,14 +412,11 @@ function showFormMessage(type, detail) {
     }
   }
 
-  /* 폼 아래에 삽입 */
   var formEl = document.getElementById("contact-form");
   formEl.parentNode.insertBefore(msg, formEl.nextSibling);
 
-  /* 스크롤해서 메시지 보이게 */
   msg.scrollIntoView({ behavior: "smooth", block: "nearest" });
 
-  /* 6초 후 사라짐 */
   setTimeout(function() {
     msg.style.opacity = "0";
     msg.style.transform = "translateY(-8px)";
@@ -401,7 +428,7 @@ function showFormMessage(type, detail) {
 
 
 /* ================================================================
-   10. 터치 감지
+   11. 터치 감지
    ================================================================ */
 function initTouchDetection() {
   if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
@@ -411,7 +438,7 @@ function initTouchDetection() {
 
 
 /* ================================================================
-   11. 뷰포트 높이 (모바일 주소창 대응)
+   12. 뷰포트 높이
    ================================================================ */
 function initViewportHeight() {
   function set() {
@@ -426,13 +453,54 @@ function initViewportHeight() {
 
 
 /* ================================================================
-   12. 초기화
+   13. 히어로 패럴랙스 (미세한 마우스 추적)
+   ================================================================ */
+function initHeroParallax() {
+  var hero = document.getElementById("section-hero");
+  if (!hero) return;
+
+  var cards = hero.querySelectorAll(".scene-card");
+  var nodes = hero.querySelectorAll(".scene-node");
+
+  /* 모바일에서는 비활성화 */
+  if (window.innerWidth < 768) return;
+
+  hero.addEventListener("mousemove", function(e) {
+    var rect = hero.getBoundingClientRect();
+    var x = (e.clientX - rect.left) / rect.width - 0.5;  /* -0.5 ~ 0.5 */
+    var y = (e.clientY - rect.top) / rect.height - 0.5;
+
+    cards.forEach(function(card, i) {
+      var depth = (i + 1) * 8;
+      card.style.transform = "translateY(" + (-14 * Math.sin(Date.now() / 1000 + i * 1.75)) + "px) translate(" + (x * depth) + "px, " + (y * depth) + "px)";
+    });
+
+    nodes.forEach(function(node, i) {
+      var depth = (i + 1) * 3;
+      node.style.transform = "translate(" + (x * depth) + "px, " + (y * depth) + "px)";
+    });
+  });
+
+  hero.addEventListener("mouseleave", function() {
+    cards.forEach(function(card) {
+      card.style.transform = "";
+    });
+    nodes.forEach(function(node) {
+      node.style.transform = "";
+    });
+  });
+}
+
+
+/* ================================================================
+   14. 초기화
    ================================================================ */
 document.addEventListener("DOMContentLoaded", function() {
   initLanguageSwitcher();
   initNavScroll();
   initActiveMenu();
   initHamburger();
+  initMegaMenu();
   initSmoothScroll();
   initCounters();
   initFAQ();
@@ -442,7 +510,8 @@ document.addEventListener("DOMContentLoaded", function() {
   initContactForm();
   initTouchDetection();
   initViewportHeight();
+  initHeroParallax();
 
-  console.log("✅ NextHub loaded (Adobe v2)");
+  console.log("✅ NextHub loaded (Autodesk Style)");
   console.log("🌐 Lang:", currentLang);
 });

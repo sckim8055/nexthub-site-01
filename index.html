@@ -8,64 +8,95 @@
   <meta property="og:description" content="Onsite Support · Cybersecurity · Consulting · IT Outsourcing — Your Dedicated IT Team in Korea" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://nexthub.me" />
-  <meta name="theme-color" content="#0f0f0f" />
+  <meta name="theme-color" content="#000000" />
 
   <title>NextHub | Your Dedicated IT Team in Korea</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
 
-  <!-- ====== S0. 내비게이션 ====== -->
+  <!-- ====== S0. 내비게이션 (Autodesk 적응형) ====== -->
   <nav id="nav-bar">
     <div class="nav-inner">
+      <!-- 로고 -->
       <a href="#section-hero" class="nav-logo">
         <span class="logo-next">Next</span><span class="logo-hub">Hub</span>
       </a>
 
-      <!-- 모바일: 풀스크린 오버레이 메뉴 -->
-      <div class="nav-overlay" id="nav-overlay">
-        <div class="nav-overlay-inner">
-          <ul class="nav-links" id="nav-links">
-            <li><a href="#section-services" data-i18n="nav_services">Services</a></li>
-            <li><a href="#section-whyus" data-i18n="nav_whyus">Why Us</a></li>
-            <!--
-            <li><a href="#section-clients" data-i18n="nav_clients">Clients</a></li>
-            <li><a href="#section-cases" data-i18n="nav_cases">Case Studies</a></li>
-            -->
-            <li><a href="#section-process" data-i18n="nav_process">How We Work</a></li>
-            <li><a href="#section-about" data-i18n="nav_about">About</a></li>
-            <li><a href="#section-faq" data-i18n="nav_faq">FAQ</a></li>
-          </ul>
-
-          <div class="nav-mobile-bottom">
-            <div class="mobile-lang-list">
-              <p class="mobile-lang-label">Language</p>
-              <div class="mobile-lang-options">
-                <button class="mobile-lang-option active" data-lang="en">
-                  <span class="mobile-lang-name">English</span>
-                  <span class="mobile-lang-check">✓</span>
-                </button>
-                <button class="mobile-lang-option" data-lang="ko">
-                  <span class="mobile-lang-name">한국어</span>
-                  <span class="mobile-lang-check">✓</span>
-                </button>
-                <button class="mobile-lang-option" data-lang="zh">
-                  <span class="mobile-lang-name">中文</span>
-                  <span class="mobile-lang-check">✓</span>
-                </button>
+      <!-- 데스크탑 메인 메뉴 (Autodesk 스타일 — 중앙 배치) -->
+      <div class="nav-center-menu" id="nav-center-menu">
+        <ul class="nav-links" id="nav-links">
+          <li class="nav-item has-mega">
+            <a href="#section-services" data-i18n="nav_services">Services</a>
+            <!-- 메가메뉴 드롭다운 -->
+            <div class="mega-menu">
+              <div class="mega-inner">
+                <div class="mega-col">
+                  <h4 class="mega-heading">IT Services</h4>
+                  <a href="#service-support" class="mega-link">
+                    <div class="mega-link-icon">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    </div>
+                    <div>
+                      <span class="mega-link-title" data-i18n="svc_1_title">IT Onsite &amp; Remote Support</span>
+                      <span class="mega-link-desc">L1/L2 helpdesk, onsite engineers, ITSM</span>
+                    </div>
+                  </a>
+                  <a href="#service-security" class="mega-link">
+                    <div class="mega-link-icon">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <div>
+                      <span class="mega-link-title" data-i18n="svc_2_title">Cybersecurity &amp; Compliance</span>
+                      <span class="mega-link-desc">Endpoint protection, vulnerability scanning</span>
+                    </div>
+                  </a>
+                </div>
+                <div class="mega-col">
+                  <h4 class="mega-heading">&nbsp;</h4>
+                  <a href="#service-consulting" class="mega-link">
+                    <div class="mega-link-icon">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    </div>
+                    <div>
+                      <span class="mega-link-title" data-i18n="svc_3_title">IT Consulting &amp; Project Management</span>
+                      <span class="mega-link-desc">IT roadmap, SI projects, PMO</span>
+                    </div>
+                  </a>
+                  <a href="#service-outsourcing" class="mega-link">
+                    <div class="mega-link-icon">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <div>
+                      <span class="mega-link-title" data-i18n="svc_4_title">IT Outsourcing &amp; SPOC</span>
+                      <span class="mega-link-desc">Full IT ops, single point of contact</span>
+                    </div>
+                  </a>
+                </div>
+                <div class="mega-col mega-col-cta">
+                  <div class="mega-cta-card">
+                    <h4>Need help choosing?</h4>
+                    <p>Tell us about your Korea IT challenges and we'll recommend the right solution.</p>
+                    <a href="#section-contact" class="btn-primary btn-sm">Get a Free Consultation</a>
+                  </div>
+                </div>
               </div>
             </div>
-            <a href="#section-contact" class="btn-primary mobile-cta" data-i18n="nav_contact">Get a Quote</a>
-          </div>
-        </div>
+          </li>
+          <li class="nav-item"><a href="#section-whyus" data-i18n="nav_whyus">Why Us</a></li>
+          <li class="nav-item"><a href="#section-process" data-i18n="nav_process">How We Work</a></li>
+          <li class="nav-item"><a href="#section-about" data-i18n="nav_about">About</a></li>
+          <li class="nav-item"><a href="#section-faq" data-i18n="nav_faq">FAQ</a></li>
+        </ul>
       </div>
 
+      <!-- 오른쪽: 언어 + CTA -->
       <div class="nav-right">
         <!-- Autodesk 스타일 언어 드롭다운 -->
         <div class="lang-dropdown" id="lang-dropdown">
@@ -74,7 +105,7 @@
               <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
             </svg>
-            <span class="lang-current" id="lang-current">English</span>
+            <span class="lang-current" id="lang-current">EN</span>
             <svg class="lang-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="lang-panel" id="lang-panel">
@@ -108,82 +139,160 @@
         <a href="#section-contact" class="btn-nav-cta desktop-only" data-i18n="nav_contact">Get a Quote</a>
       </div>
 
+      <!-- 햄버거 (모바일) -->
       <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
     </div>
+
+    <!-- 모바일: 풀스크린 오버레이 메뉴 -->
+    <div class="nav-overlay" id="nav-overlay">
+      <div class="nav-overlay-inner">
+        <ul class="nav-mobile-links">
+          <li><a href="#section-services" data-i18n="nav_services">Services</a></li>
+          <li><a href="#section-whyus" data-i18n="nav_whyus">Why Us</a></li>
+          <li><a href="#section-process" data-i18n="nav_process">How We Work</a></li>
+          <li><a href="#section-about" data-i18n="nav_about">About</a></li>
+          <li><a href="#section-faq" data-i18n="nav_faq">FAQ</a></li>
+        </ul>
+
+        <div class="nav-mobile-bottom">
+          <div class="mobile-lang-list">
+            <p class="mobile-lang-label">Language</p>
+            <div class="mobile-lang-options">
+              <button class="mobile-lang-option active" data-lang="en">
+                <span class="mobile-lang-name">English</span>
+                <span class="mobile-lang-check">✓</span>
+              </button>
+              <button class="mobile-lang-option" data-lang="ko">
+                <span class="mobile-lang-name">한국어</span>
+                <span class="mobile-lang-check">✓</span>
+              </button>
+              <button class="mobile-lang-option" data-lang="zh">
+                <span class="mobile-lang-name">中文</span>
+                <span class="mobile-lang-check">✓</span>
+              </button>
+            </div>
+          </div>
+          <a href="#section-contact" class="btn-primary mobile-cta" data-i18n="nav_contact">Get a Quote</a>
+        </div>
+      </div>
+    </div>
   </nav>
 
 
-  <!-- ====== S1. 히어로 (Split Layout + 3D Visual) ====== -->
+  <!-- ====== S1. 히어로 (풀스크린 시네마틱) ====== -->
   <section id="section-hero">
-    <div class="hero-bg-elements" aria-hidden="true">
-      <div class="hero-orb hero-orb-1"></div>
-      <div class="hero-orb hero-orb-2"></div>
-      <div class="hero-grid-lines"></div>
+    <!-- 배경 비디오/이미지 영역 -->
+    <div class="hero-bg" aria-hidden="true">
+      <div class="hero-bg-gradient"></div>
+      <div class="hero-bg-pattern"></div>
+      <div class="hero-bg-visual">
+        <!-- 서버룸/IT 서비스 배경 시각 요소 -->
+        <div class="hero-scene">
+          <div class="scene-grid"></div>
+          <div class="scene-nodes">
+            <div class="scene-node node-1"></div>
+            <div class="scene-node node-2"></div>
+            <div class="scene-node node-3"></div>
+            <div class="scene-node node-4"></div>
+            <div class="scene-node node-5"></div>
+            <div class="scene-node node-6"></div>
+          </div>
+          <div class="scene-connections">
+            <svg class="connection-lines" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+              <line class="conn-line" x1="200" y1="150" x2="400" y2="100" />
+              <line class="conn-line" x1="400" y1="100" x2="600" y2="200" />
+              <line class="conn-line" x1="600" y1="200" x2="500" y2="400" />
+              <line class="conn-line" x1="500" y1="400" x2="300" y2="350" />
+              <line class="conn-line" x1="300" y1="350" x2="200" y2="150" />
+              <line class="conn-line" x1="400" y1="100" x2="300" y2="350" />
+              <line class="conn-line" x1="200" y1="150" x2="500" y2="400" />
+              <line class="conn-line" x1="150" y1="400" x2="300" y2="350" />
+              <line class="conn-line" x1="650" y1="350" x2="500" y2="400" />
+            </svg>
+          </div>
+          <!-- 플로팅 서비스 카드들 -->
+          <div class="scene-card scene-card-1">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <span>IT Support</span>
+          </div>
+          <div class="scene-card scene-card-2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Security</span>
+          </div>
+          <div class="scene-card scene-card-3">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            <span>Consulting</span>
+          </div>
+          <div class="scene-card scene-card-4">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Outsourcing</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="container hero-content">
-      <div class="hero-layout">
-
-        <!-- 왼쪽: 텍스트 -->
-        <div class="hero-text">
+      <div class="hero-text-center">
+        <div class="hero-eyebrow-wrap">
+          <span class="hero-eyebrow-line"></span>
           <p class="hero-eyebrow">IT Operations for MNCs in Korea</p>
-
-          <h1 class="hero-headline" data-i18n="hero_headline">
-            Your Dedicated IT Team<br />in Korea
-          </h1>
-
-          <p class="hero-subtitle" data-i18n="hero_subtitle">
-            We run IT operations for multinational companies in Korea — 
-            so your HQ doesn't have to worry about the local side.
-          </p>
-
-          <!-- 배지: 클릭하면 해당 서비스로 이동 -->
-          <div class="hero-badges">
-            <a href="#service-support" class="badge" data-i18n="hero_badge_1">Onsite &amp; Remote Support</a>
-            <a href="#service-security" class="badge" data-i18n="hero_badge_2">Cybersecurity</a>
-            <a href="#service-consulting" class="badge" data-i18n="hero_badge_3">Consulting</a>
-            <a href="#service-outsourcing" class="badge" data-i18n="hero_badge_4">IT Outsourcing</a>
-          </div>
-
-          <div class="hero-cta">
-            <a href="#section-services" class="btn-primary" data-i18n="hero_cta_1">Explore Our Services</a>
-            <a href="#section-contact" class="btn-secondary" data-i18n="hero_cta_2">Get a Free Consultation</a>
-          </div>
+          <span class="hero-eyebrow-line"></span>
         </div>
 
-        <!-- 오른쪽: 3D 플로팅 비주얼 -->
-        <div class="hero-visual" aria-hidden="true">
-          <div class="hero-visual-glow"></div>
-          <div class="hero-visual-orbit"></div>
-          <div class="hero-visual-orbit hero-visual-orbit-2"></div>
+        <h1 class="hero-headline" data-i18n="hero_headline">
+          Your Dedicated IT Team<br />in Korea
+        </h1>
 
-          <div class="hero-visual-hub">N</div>
+        <p class="hero-subtitle" data-i18n="hero_subtitle">
+          We run IT operations for multinational companies in Korea —
+          so your HQ doesn't have to worry about the local side.
+        </p>
 
-          <div class="float-card float-card-1">
-            <div class="float-card-icon">🖥️</div>
-            <div class="float-card-label">IT Support</div>
-          </div>
-          <div class="float-card float-card-2">
-            <div class="float-card-icon">🔒</div>
-            <div class="float-card-label">Security</div>
-          </div>
-          <div class="float-card float-card-3">
-            <div class="float-card-icon">📋</div>
-            <div class="float-card-label">Consulting</div>
-          </div>
-          <div class="float-card float-card-4">
-            <div class="float-card-icon">🤝</div>
-            <div class="float-card-label">Outsourcing</div>
-          </div>
+        <div class="hero-cta">
+          <a href="#section-services" class="btn-primary btn-lg" data-i18n="hero_cta_1">Explore Our Services</a>
+          <a href="#section-contact" class="btn-secondary btn-lg" data-i18n="hero_cta_2">Get a Free Consultation</a>
         </div>
 
+        <!-- 서비스 배지들 -->
+        <div class="hero-badges">
+          <a href="#service-support" class="badge" data-i18n="hero_badge_1">Onsite &amp; Remote Support</a>
+          <a href="#service-security" class="badge" data-i18n="hero_badge_2">Cybersecurity</a>
+          <a href="#service-consulting" class="badge" data-i18n="hero_badge_3">Consulting</a>
+          <a href="#service-outsourcing" class="badge" data-i18n="hero_badge_4">IT Outsourcing</a>
+        </div>
       </div>
 
-      <!-- 하단 신뢰 바 (전체 너비) -->
-      <div class="hero-trust">
+      <!-- 하단 스크롤 표시 -->
+      <div class="hero-scroll-indicator" aria-hidden="true">
+        <div class="scroll-mouse">
+          <div class="scroll-wheel"></div>
+        </div>
+        <span>Scroll to explore</span>
+      </div>
+    </div>
+
+    <!-- 하단 신뢰 바 -->
+    <div class="hero-trust-bar">
+      <div class="container">
         <p class="trust-label" data-i18n="hero_trust">Trusted by MNCs across 6+ industries in Korea</p>
+        <div class="trust-stats">
+          <div class="trust-stat">
+            <span class="trust-stat-number">18+</span>
+            <span class="trust-stat-label">Years Experience</span>
+          </div>
+          <div class="trust-divider"></div>
+          <div class="trust-stat">
+            <span class="trust-stat-number">50+</span>
+            <span class="trust-stat-label">Projects</span>
+          </div>
+          <div class="trust-divider"></div>
+          <div class="trust-stat">
+            <span class="trust-stat-number">95%</span>
+            <span class="trust-stat-label">Retention</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -191,29 +300,39 @@
 
   <!-- ====== S2. 고충 ====== -->
   <section id="section-painpoints" class="section-dark scroll-reveal">
-    <div class="section-fade-top"></div>
     <div class="container">
-      <h2 class="section-title" data-i18n="pain_title">Challenges MNCs Face in Korea</h2>
-      <p class="section-subtitle" data-i18n="pain_subtitle">Sound familiar? You're not alone.</p>
+      <div class="section-header">
+        <span class="section-label">Challenges</span>
+        <h2 class="section-title" data-i18n="pain_title">Challenges MNCs Face in Korea</h2>
+        <p class="section-subtitle" data-i18n="pain_subtitle">Sound familiar? You're not alone.</p>
+      </div>
 
       <div class="painpoints-grid">
         <div class="painpoint-card scroll-reveal-child">
-          <span class="painpoint-icon">🔍</span>
+          <div class="painpoint-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
           <h3 data-i18n="pain_1_title">No Reliable Local IT Partner</h3>
           <p data-i18n="pain_1_desc">Your HQ needs someone on the ground in Korea who understands global IT standards — but finding that person is harder than expected.</p>
         </div>
         <div class="painpoint-card scroll-reveal-child">
-          <span class="painpoint-icon">🏢</span>
+          <div class="painpoint-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
           <h3 data-i18n="pain_2_title">No Onsite IT Presence</h3>
           <p data-i18n="pain_2_desc">When a network goes down or a laptop breaks in Seoul, your European or US helpdesk can't fix it remotely at 3am their time.</p>
         </div>
         <div class="painpoint-card scroll-reveal-child">
-          <span class="painpoint-icon">🗣️</span>
+          <div class="painpoint-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
           <h3 data-i18n="pain_3_title">Language &amp; Vendor Barrier</h3>
           <p data-i18n="pain_3_desc">Korean telecom setup, vendor contracts, government compliance — all require native Korean. And your HQ needs reports in English or Chinese.</p>
         </div>
         <div class="painpoint-card scroll-reveal-child">
-          <span class="painpoint-icon">📊</span>
+          <div class="painpoint-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
           <h3 data-i18n="pain_4_title">Too Small for a Dedicated IT Team</h3>
           <p data-i18n="pain_4_desc">Your Korea office has 5 to 50 people. Hiring a full-time IT manager doesn't make sense — but going without IT support isn't an option either.</p>
         </div>
@@ -224,67 +343,97 @@
         <a href="#section-services" class="btn-text-link" data-i18n="pain_link">See how →</a>
       </div>
     </div>
-    <div class="section-fade-bottom"></div>
   </section>
 
 
-  <!-- ====== S3. 서비스 ====== -->
+  <!-- ====== S3. 서비스 (대형 카드 + 배경 비주얼) ====== -->
   <section id="section-services" class="section-light scroll-reveal">
     <div class="container">
-      <h2 class="section-title" data-i18n="svc_title">Our Services</h2>
-      <p class="section-subtitle" data-i18n="svc_subtitle">End-to-end IT services built for multinational companies operating in Korea</p>
+      <div class="section-header">
+        <span class="section-label">What We Do</span>
+        <h2 class="section-title" data-i18n="svc_title">Our Services</h2>
+        <p class="section-subtitle" data-i18n="svc_subtitle">End-to-end IT services built for multinational companies operating in Korea</p>
+      </div>
 
       <div class="services-grid">
         <div class="service-card scroll-reveal-child" id="service-support">
-          <div class="service-icon">🖥️</div>
-          <h3 data-i18n="svc_1_title">IT Onsite &amp; Remote Support</h3>
-          <p class="service-summary" data-i18n="svc_1_summary">We put a dedicated IT engineer in your Korea office — someone who speaks your language and follows your HQ's standards.</p>
-          <ul class="service-features">
-            <li data-i18n="svc_1_f1">L1/L2 helpdesk — PC, network, printer, software issues</li>
-            <li data-i18n="svc_1_f2">Ticket management on ServiceNow or your existing ITSM tool</li>
-            <li data-i18n="svc_1_f3">Flexible engagement: full-time, scheduled visits, or remote</li>
-            <li data-i18n="svc_1_f4">Wifi survey, server room check, IT equipment dispatch</li>
-            <li data-i18n="svc_1_f5">New hire IT setup &amp; offboarding asset collection</li>
-          </ul>
+          <div class="service-card-visual">
+            <div class="service-card-bg service-bg-1"></div>
+            <div class="service-icon-wrap">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+          </div>
+          <div class="service-card-content">
+            <h3 data-i18n="svc_1_title">IT Onsite &amp; Remote Support</h3>
+            <p class="service-summary" data-i18n="svc_1_summary">We put a dedicated IT engineer in your Korea office — someone who speaks your language and follows your HQ's standards.</p>
+            <ul class="service-features">
+              <li data-i18n="svc_1_f1">L1/L2 helpdesk — PC, network, printer, software issues</li>
+              <li data-i18n="svc_1_f2">Ticket management on ServiceNow or your existing ITSM tool</li>
+              <li data-i18n="svc_1_f3">Flexible engagement: full-time, scheduled visits, or remote</li>
+              <li data-i18n="svc_1_f4">Wifi survey, server room check, IT equipment dispatch</li>
+              <li data-i18n="svc_1_f5">New hire IT setup &amp; offboarding asset collection</li>
+            </ul>
+          </div>
         </div>
 
         <div class="service-card scroll-reveal-child" id="service-security">
-          <div class="service-icon">🔒</div>
-          <h3 data-i18n="svc_2_title">Cybersecurity &amp; Compliance</h3>
-          <p class="service-summary" data-i18n="svc_2_summary">We make sure your Korea office meets HQ security policies and local regulations — without your HQ needing to micromanage it.</p>
-          <ul class="service-features">
-            <li data-i18n="svc_2_f1">Endpoint protection rollout and daily monitoring</li>
-            <li data-i18n="svc_2_f2">Network vulnerability scanning &amp; remediation</li>
-            <li data-i18n="svc_2_f3">HQ security policy localization &amp; enforcement</li>
-            <li data-i18n="svc_2_f4">Security incident handling &amp; root cause reporting</li>
-            <li data-i18n="svc_2_f5">Staff security training (phishing, data handling, etc.)</li>
-          </ul>
+          <div class="service-card-visual">
+            <div class="service-card-bg service-bg-2"></div>
+            <div class="service-icon-wrap">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+          </div>
+          <div class="service-card-content">
+            <h3 data-i18n="svc_2_title">Cybersecurity &amp; Compliance</h3>
+            <p class="service-summary" data-i18n="svc_2_summary">We make sure your Korea office meets HQ security policies and local regulations — without your HQ needing to micromanage it.</p>
+            <ul class="service-features">
+              <li data-i18n="svc_2_f1">Endpoint protection rollout and daily monitoring</li>
+              <li data-i18n="svc_2_f2">Network vulnerability scanning &amp; remediation</li>
+              <li data-i18n="svc_2_f3">HQ security policy localization &amp; enforcement</li>
+              <li data-i18n="svc_2_f4">Security incident handling &amp; root cause reporting</li>
+              <li data-i18n="svc_2_f5">Staff security training (phishing, data handling, etc.)</li>
+            </ul>
+          </div>
         </div>
 
         <div class="service-card scroll-reveal-child" id="service-consulting">
-          <div class="service-icon">📋</div>
-          <h3 data-i18n="svc_3_title">IT Consulting &amp; Project Management</h3>
-          <p class="service-summary" data-i18n="svc_3_summary">Need to launch a new system, migrate platforms, or align Korea IT with global strategy? We manage it end to end.</p>
-          <ul class="service-features">
-            <li data-i18n="svc_3_f1">IT roadmap planning aligned with HQ strategy</li>
-            <li data-i18n="svc_3_f2">System integration (SI) project execution</li>
-            <li data-i18n="svc_3_f3">Requirements gathering &amp; business process analysis</li>
-            <li data-i18n="svc_3_f4">PMO operation, budget planning (CAPEX/OPEX)</li>
-            <li data-i18n="svc_3_f5">Local vendor sourcing, evaluation &amp; management</li>
-          </ul>
+          <div class="service-card-visual">
+            <div class="service-card-bg service-bg-3"></div>
+            <div class="service-icon-wrap">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+          </div>
+          <div class="service-card-content">
+            <h3 data-i18n="svc_3_title">IT Consulting &amp; Project Management</h3>
+            <p class="service-summary" data-i18n="svc_3_summary">Need to launch a new system, migrate platforms, or align Korea IT with global strategy? We manage it end to end.</p>
+            <ul class="service-features">
+              <li data-i18n="svc_3_f1">IT roadmap planning aligned with HQ strategy</li>
+              <li data-i18n="svc_3_f2">System integration (SI) project execution</li>
+              <li data-i18n="svc_3_f3">Requirements gathering &amp; business process analysis</li>
+              <li data-i18n="svc_3_f4">PMO operation, budget planning (CAPEX/OPEX)</li>
+              <li data-i18n="svc_3_f5">Local vendor sourcing, evaluation &amp; management</li>
+            </ul>
+          </div>
         </div>
 
         <div class="service-card scroll-reveal-child" id="service-outsourcing">
-          <div class="service-icon">🤝</div>
-          <h3 data-i18n="svc_4_title">IT Outsourcing &amp; SPOC</h3>
-          <p class="service-summary" data-i18n="svc_4_summary">Don't need a full IT department? We act as your Korea IT team — handling everything from daily ops to HQ reporting under one contract.</p>
-          <ul class="service-features">
-            <li data-i18n="svc_4_f1">Full or partial IT operations takeover</li>
-            <li data-i18n="svc_4_f2">SPOC: one contact for everything IT in Korea</li>
-            <li data-i18n="svc_4_f3">Infra, cloud &amp; network managed services</li>
-            <li data-i18n="svc_4_f4">Monthly operations report &amp; SLA dashboard</li>
-            <li data-i18n="svc_4_f5">Trilingual HQ communication (KR / EN / CN)</li>
-          </ul>
+          <div class="service-card-visual">
+            <div class="service-card-bg service-bg-4"></div>
+            <div class="service-icon-wrap">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+          </div>
+          <div class="service-card-content">
+            <h3 data-i18n="svc_4_title">IT Outsourcing &amp; SPOC</h3>
+            <p class="service-summary" data-i18n="svc_4_summary">Don't need a full IT department? We act as your Korea IT team — handling everything from daily ops to HQ reporting under one contract.</p>
+            <ul class="service-features">
+              <li data-i18n="svc_4_f1">Full or partial IT operations takeover</li>
+              <li data-i18n="svc_4_f2">SPOC: one contact for everything IT in Korea</li>
+              <li data-i18n="svc_4_f3">Infra, cloud &amp; network managed services</li>
+              <li data-i18n="svc_4_f4">Monthly operations report &amp; SLA dashboard</li>
+              <li data-i18n="svc_4_f5">Trilingual HQ communication (KR / EN / CN)</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -293,50 +442,64 @@
 
   <!-- ====== S4. 왜 넥스트허브 ====== -->
   <section id="section-whyus" class="section-dark scroll-reveal">
-    <div class="section-fade-top"></div>
     <div class="container">
-      <h2 class="section-title" data-i18n="why_title">Why NextHub</h2>
-      <p class="section-subtitle" data-i18n="why_subtitle">What makes us different from typical IT outsourcing firms</p>
+      <div class="section-header">
+        <span class="section-label">Differentiators</span>
+        <h2 class="section-title" data-i18n="why_title">Why NextHub</h2>
+        <p class="section-subtitle" data-i18n="why_subtitle">What makes us different from typical IT outsourcing firms</p>
+      </div>
 
       <div class="whyus-grid">
         <div class="whyus-card scroll-reveal-child">
-          <span class="whyus-icon">🌏</span>
+          <div class="whyus-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
           <h3 data-i18n="why_1_title">Trilingual by Default</h3>
           <p data-i18n="why_1_desc">Every engagement is covered in Korean, English, and Chinese. No extra cost, no third-party translators.</p>
         </div>
         <div class="whyus-card scroll-reveal-child">
-          <span class="whyus-icon">🏢</span>
+          <div class="whyus-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
           <h3 data-i18n="why_2_title">We've Sat on Your Side of the Table</h3>
           <p data-i18n="why_2_desc">Our team has worked inside global IT organizations across APAC. We know what HQ expects and what the Korea office actually needs.</p>
         </div>
         <div class="whyus-card scroll-reveal-child">
-          <span class="whyus-icon">🔧</span>
+          <div class="whyus-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
           <h3 data-i18n="why_3_title">More Than Break-Fix</h3>
           <p data-i18n="why_3_desc">Most IT vendors stop at fixing problems. We also help you plan IT strategy, deliver projects, and turn data into dashboards.</p>
         </div>
         <div class="whyus-card scroll-reveal-child">
-          <span class="whyus-icon">📋</span>
+          <div class="whyus-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
           <h3 data-i18n="why_4_title">Transparent &amp; Process-Driven</h3>
           <p data-i18n="why_4_desc">We run ServiceNow, follow ISO-aligned workflows, and share SLA dashboards monthly. You always know how we're performing.</p>
         </div>
         <div class="whyus-card scroll-reveal-child">
-          <span class="whyus-icon">💰</span>
+          <div class="whyus-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
           <h3 data-i18n="why_5_title">Right-Sized, Right-Priced</h3>
           <p data-i18n="why_5_desc">We deliver senior-level work at a fraction of the cost — and our contracts flex to your actual needs.</p>
         </div>
         <div class="whyus-card scroll-reveal-child">
-          <span class="whyus-icon">🎯</span>
+          <div class="whyus-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="16 12 12 8 8 12"/><line x1="12" y1="16" x2="12" y2="8"/></svg>
+          </div>
           <h3 data-i18n="why_6_title">One Vendor, Full Coverage</h3>
           <p data-i18n="why_6_desc">IT support, security, consulting, and outsourcing — four services, one contract, one point of contact.</p>
         </div>
       </div>
     </div>
-    <div class="section-fade-bottom"></div>
   </section>
 
 
-  <!-- ====== S5. 실적 숫자 ====== -->
-  <section id="section-metrics" class="section-dark scroll-reveal">
+  <!-- ====== S5. 실적 숫자 (풀 와이드 배너 스타일) ====== -->
+  <section id="section-metrics" class="scroll-reveal">
+    <div class="metrics-bg" aria-hidden="true"></div>
     <div class="container">
       <h2 class="section-title" data-i18n="metrics_title">Our Track Record</h2>
       <div class="metrics-grid">
@@ -372,8 +535,11 @@
   <!-- ====== S6. 클라이언트 ====== -->
   <section id="section-clients" class="section-light scroll-reveal">
     <div class="container">
-      <h2 class="section-title" data-i18n="clients_title">Trusted by Leading MNCs</h2>
-      <p class="section-subtitle" data-i18n="clients_subtitle">We serve multinational corporations across diverse industries in Korea</p>
+      <div class="section-header">
+        <span class="section-label">Clients</span>
+        <h2 class="section-title" data-i18n="clients_title">Trusted by Leading MNCs</h2>
+        <p class="section-subtitle" data-i18n="clients_subtitle">We serve multinational corporations across diverse industries in Korea</p>
+      </div>
 
       <div class="clients-badges">
         <div class="client-badge" data-i18n="client_1">Global Pharmaceutical Company</div>
@@ -387,106 +553,67 @@
 
       <h3 class="subsection-title" data-i18n="industries_title">Industries We Serve</h3>
       <div class="industries-grid">
-        <div class="industry-item"><span class="industry-icon">💊</span><span data-i18n="ind_pharma">Pharmaceutical</span></div>
-        <div class="industry-item"><span class="industry-icon">🚗</span><span data-i18n="ind_auto">Automotive</span></div>
-        <div class="industry-item"><span class="industry-icon">🔌</span><span data-i18n="ind_electronics">Electronics</span></div>
-        <div class="industry-item"><span class="industry-icon">🏥</span><span data-i18n="ind_medical">Medical Device</span></div>
-        <div class="industry-item"><span class="industry-icon">💄</span><span data-i18n="ind_beauty">Beauty &amp; Retail</span></div>
-        <div class="industry-item"><span class="industry-icon">🏭</span><span data-i18n="ind_manufacturing">Manufacturing</span></div>
-        <div class="industry-item"><span class="industry-icon">📚</span><span data-i18n="ind_education">Education</span></div>
-        <div class="industry-item"><span class="industry-icon">💰</span><span data-i18n="ind_finance">Finance</span></div>
+        <div class="industry-item">
+          <div class="industry-icon-wrap">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+          </div>
+          <span data-i18n="ind_pharma">Pharmaceutical</span>
+        </div>
+        <div class="industry-item">
+          <div class="industry-icon-wrap">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M5 17H3v-4l2-3h5l4 3h4v4h-2"/><path d="M9 17h6"/><path d="M5 10V6h4"/></svg>
+          </div>
+          <span data-i18n="ind_auto">Automotive</span>
+        </div>
+        <div class="industry-item">
+          <div class="industry-icon-wrap">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="2" x2="9" y2="4"/><line x1="15" y1="2" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="22"/><line x1="15" y1="20" x2="15" y2="22"/><line x1="20" y1="9" x2="22" y2="9"/><line x1="20" y1="15" x2="22" y2="15"/><line x1="2" y1="9" x2="4" y2="9"/><line x1="2" y1="15" x2="4" y2="15"/></svg>
+          </div>
+          <span data-i18n="ind_electronics">Electronics</span>
+        </div>
+        <div class="industry-item">
+          <div class="industry-icon-wrap">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <span data-i18n="ind_medical">Medical Device</span>
+        </div>
+        <div class="industry-item">
+          <div class="industry-icon-wrap">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <span data-i18n="ind_beauty">Beauty &amp; Retail</span>
+        </div>
+        <div class="industry-item">
+          <div class="industry-icon-wrap">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 20h20"/><path d="M5 20V8l7-5 7 5v12"/><path d="M9 20v-4h6v4"/></svg>
+          </div>
+          <span data-i18n="ind_manufacturing">Manufacturing</span>
+        </div>
+        <div class="industry-item">
+          <div class="industry-icon-wrap">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <span data-i18n="ind_education">Education</span>
+        </div>
+        <div class="industry-item">
+          <div class="industry-icon-wrap">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <span data-i18n="ind_finance">Finance</span>
+        </div>
       </div>
     </div>
   </section>
 
-
-      <!-- ====== S7. 케이스 스터디 (이어서) ====== 
-      <h2 class="section-title" data-i18n="cases_title">Case Studies</h2>
-      <p class="section-subtitle" data-i18n="cases_subtitle">Real results for real MNCs in Korea</p>
-
-      <div class="cases-grid">
-        <div class="case-card scroll-reveal-child">
-          <div class="case-badge" data-i18n="case_1_badge">IT Support</div>
-          <div class="case-industry" data-i18n="case_1_industry">Global Pharmaceutical Company</div>
-          <h3 class="case-title" data-i18n="case_1_title">Closing the 8-Hour Response Gap</h3>
-          <div class="case-body">
-            <div class="case-section"><h4 data-i18n="case_challenge">Challenge</h4><p data-i18n="case_1_challenge">30-person Korea office, no local IT. European HQ helpdesk took 8+ hours to respond due to timezone gap.</p></div>
-            <div class="case-section"><h4 data-i18n="case_solution">Solution</h4><p data-i18n="case_1_solution">NextHub deployed a bilingual engineer onsite 3 days/week plus always-on remote support. All tickets managed via ServiceNow with SLA tracking and monthly HQ reports.</p></div>
-            <div class="case-section"><h4 data-i18n="case_result">Result</h4><p data-i18n="case_1_result">Response: 8h → 2h. Staff satisfaction up 40%. Zero SLA breaches in 12 months.</p></div>
-          </div>
-          <div class="case-tags"><span class="tag">Onsite Support</span><span class="tag">ServiceNow</span><span class="tag">ITSM</span></div>
-        </div>
-
-        <div class="case-card scroll-reveal-child">
-          <div class="case-badge" data-i18n="case_2_badge">Support + Outsourcing</div>
-          <div class="case-industry" data-i18n="case_2_industry">European Auto Parts Manufacturer</div>
-          <h3 class="case-title" data-i18n="case_2_title">Korea Office Up and Running in 4 Weeks</h3>
-          <div class="case-body">
-            <div class="case-section"><h4 data-i18n="case_challenge">Challenge</h4><p data-i18n="case_2_challenge">New 20-seat Korea office needed full IT infrastructure in 4 weeks. HQ had zero local vendor contacts and couldn't navigate Korean telecom or procurement processes.</p></div>
-            <div class="case-section"><h4 data-i18n="case_solution">Solution</h4><p data-i18n="case_2_solution">NextHub managed everything: ISP contract, network architecture, PC and peripheral sourcing, security setup, and full installation. One local project manager handling all Korean vendors on behalf of HQ.</p></div>
-            <div class="case-section"><h4 data-i18n="case_result">Result</h4><p data-i18n="case_2_result">Office fully operational in 4 weeks. 15% under budget. Ongoing managed support contract signed.</p></div>
-          </div>
-          <div class="case-tags"><span class="tag">Office Setup</span><span class="tag">Vendor Management</span><span class="tag">Procurement</span></div>
-        </div>
-
-        <div class="case-card scroll-reveal-child">
-          <div class="case-badge" data-i18n="case_3_badge">IT Support</div>
-          <div class="case-industry" data-i18n="case_3_industry">Global Retail Chain</div>
-          <h3 class="case-title" data-i18n="case_3_title">Multi-Store IT That Runs Before You Open</h3>
-          <div class="case-body">
-            <div class="case-section"><h4 data-i18n="case_challenge">Challenge</h4><p data-i18n="case_3_challenge">Multiple Korea stores needed reliable IT for POS, network, and in-store devices. Previous vendor was slow and couldn't report to regional HQ in English.</p></div>
-            <div class="case-section"><h4 data-i18n="case_solution">Solution</h4><p data-i18n="case_3_solution">NextHub assigned engineers for scheduled store visits and emergency dispatch. Standardized IT configurations across all locations and provided weekly English reports to regional HQ.</p></div>
-            <div class="case-section"><h4 data-i18n="case_result">Result</h4><p data-i18n="case_3_result">Store IT downtime cut 60%. All issues resolved before business hours. Expanded from 3 to 8 stores.</p></div>
-          </div>
-          <div class="case-tags"><span class="tag">Retail IT</span><span class="tag">Multi-site</span><span class="tag">Dispatch</span></div>
-        </div>
-
-        <div class="case-card scroll-reveal-child">
-          <div class="case-badge" data-i18n="case_4_badge">IT Outsourcing</div>
-          <div class="case-industry" data-i18n="case_4_industry">Medical Device MNC</div>
-          <h3 class="case-title" data-i18n="case_4_title">NextHub Became Their Korea IT Department</h3>
-          <div class="case-body">
-            <div class="case-section"><h4 data-i18n="case_challenge">Challenge</h4><p data-i18n="case_4_challenge">10-person Korea branch. No budget for full-time IT, but HQ demanded professional operations and strict security compliance.</p></div>
-            <div class="case-section"><h4 data-i18n="case_solution">Solution</h4><p data-i18n="case_4_solution">NextHub became the IT SPOC — covering infrastructure, endpoint security, vendor coordination, procurement, and monthly English reporting to APAC HQ.</p></div>
-            <div class="case-section"><h4 data-i18n="case_result">Result</h4><p data-i18n="case_4_result">IT cost down 30%. Korea rated "best-in-class" for IT compliance in Asia. Contract renewed 3rd year.</p></div>
-          </div>
-          <div class="case-tags"><span class="tag">Full Outsourcing</span><span class="tag">SPOC</span><span class="tag">Compliance</span></div>
-        </div>
-
-        <div class="case-card scroll-reveal-child">
-          <div class="case-badge" data-i18n="case_5_badge">Consulting</div>
-          <div class="case-industry" data-i18n="case_5_industry">Beauty &amp; Retail Enterprise</div>
-          <h3 class="case-title" data-i18n="case_5_title">eCommerce Platform Delivered On Time</h3>
-          <div class="case-body">
-            <div class="case-section"><h4 data-i18n="case_challenge">Challenge</h4><p data-i18n="case_5_challenge">Large-scale eCommerce system integration with 4 development vendors. Tight deadline, and the client had no PM experienced enough to coordinate all moving parts.</p></div>
-            <div class="case-section"><h4 data-i18n="case_solution">Solution</h4><p data-i18n="case_5_solution">NextHub stepped in as PM/PMO — led requirements workshops, coordinated all vendors, oversaw QA cycles, and executed go-live. Weekly status reports to executive stakeholders in English.</p></div>
-            <div class="case-section"><h4 data-i18n="case_result">Result</h4><p data-i18n="case_5_result">Launched on schedule. Handled 3x projected traffic on first campaign — zero downtime. Platform stabilized within 2 weeks.</p></div>
-          </div>
-          <div class="case-tags"><span class="tag">SI</span><span class="tag">PMO</span><span class="tag">eCommerce</span></div>
-        </div>
-
-        <div class="case-card scroll-reveal-child">
-          <div class="case-badge" data-i18n="case_6_badge">IT Support</div>
-          <div class="case-industry" data-i18n="case_6_industry">Japanese Manufacturer</div>
-          <h3 class="case-title" data-i18n="case_6_title">Factory IT Without a Full-Time Engineer</h3>
-          <div class="case-body">
-            <div class="case-section"><h4 data-i18n="case_challenge">Challenge</h4><p data-i18n="case_6_challenge">Korea factory needed periodic server checks, network maintenance, and equipment setup — but the workload didn't justify a full-time IT hire.</p></div>
-            <div class="case-section"><h4 data-i18n="case_solution">Solution</h4><p data-i18n="case_6_solution">NextHub provided bi-weekly scheduled dispatch plus on-call emergency support. Covered servers, network, endpoints, and production system connectivity. All work logged and reported in English to Japan HQ.</p></div>
-            <div class="case-section"><h4 data-i18n="case_result">Result</h4><p data-i18n="case_6_result">Maintenance cost down 40% vs. previous full-time arrangement. Zero unplanned production downtime for 12 months.</p></div>
-          </div>
-          <div class="case-tags"><span class="tag">Factory IT</span><span class="tag">Dispatch</span><span class="tag">Managed Support</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="section-fade-bottom"></div>
-  </section>
--->
 
   <!-- ====== S8. 프로세스 ====== -->
   <section id="section-process" class="section-light scroll-reveal">
     <div class="container">
-      <h2 class="section-title" data-i18n="process_title">How We Work</h2>
-      <p class="section-subtitle" data-i18n="process_subtitle">A clear, structured process from first contact to ongoing operations</p>
+      <div class="section-header">
+        <span class="section-label">Process</span>
+        <h2 class="section-title" data-i18n="process_title">How We Work</h2>
+        <p class="section-subtitle" data-i18n="process_subtitle">A clear, structured process from first contact to ongoing operations</p>
+      </div>
 
       <div class="process-steps">
         <div class="process-step scroll-reveal-child">
@@ -494,20 +621,32 @@
           <h3 data-i18n="step_1_title">Discovery Call</h3>
           <p data-i18n="step_1_desc">Tell us about your Korea IT situation. We listen, ask the right questions, and figure out if we're a good fit.</p>
         </div>
+        <div class="process-connector" aria-hidden="true">
+          <svg width="40" height="24" viewBox="0 0 40 24"><path d="M0 12h36M30 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
         <div class="process-step scroll-reveal-child">
           <div class="step-number">02</div>
           <h3 data-i18n="step_2_title">Assessment &amp; Proposal</h3>
           <p data-i18n="step_2_desc">We evaluate your current setup, identify gaps, and deliver a clear proposal: scope, SLA, timeline, and pricing.</p>
+        </div>
+        <div class="process-connector" aria-hidden="true">
+          <svg width="40" height="24" viewBox="0 0 40 24"><path d="M0 12h36M30 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
         </div>
         <div class="process-step scroll-reveal-child">
           <div class="step-number">03</div>
           <h3 data-i18n="step_3_title">Onboarding</h3>
           <p data-i18n="step_3_desc">Once agreed, we hit the ground in 1–2 weeks. We set up monitoring tools, get system access, and meet your HQ contacts.</p>
         </div>
+        <div class="process-connector" aria-hidden="true">
+          <svg width="40" height="24" viewBox="0 0 40 24"><path d="M0 12h36M30 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
         <div class="process-step scroll-reveal-child">
           <div class="step-number">04</div>
           <h3 data-i18n="step_4_title">Execution</h3>
           <p data-i18n="step_4_desc">We deliver services under agreed SLAs. Every task is ticketed, tracked, and documented. No black boxes.</p>
+        </div>
+        <div class="process-connector" aria-hidden="true">
+          <svg width="40" height="24" viewBox="0 0 40 24"><path d="M0 12h36M30 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
         </div>
         <div class="process-step scroll-reveal-child">
           <div class="step-number">05</div>
@@ -521,16 +660,24 @@
 
   <!-- ====== S9. 회사 소개 ====== -->
   <section id="section-about" class="section-dark scroll-reveal">
-    <div class="section-fade-top"></div>
     <div class="container">
-      <h2 class="section-title" data-i18n="about_title">About NextHub</h2>
+      <div class="section-header">
+        <span class="section-label">Company</span>
+        <h2 class="section-title" data-i18n="about_title">About NextHub</h2>
+      </div>
 
       <div class="about-grid">
         <div class="about-block">
+          <div class="about-block-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+          </div>
           <h3 data-i18n="about_mission_title">Why We Exist</h3>
           <p data-i18n="about_mission_text">NextHub was built to solve one problem: multinational companies in Korea deserve a local IT partner that actually gets how global organizations work. We're not a generic IT vendor. We're the team that bridges your HQ and Korea operations — in the language your people speak, with the process your HQ trusts.</p>
         </div>
         <div class="about-block">
+          <div class="about-block-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
           <h3 data-i18n="about_team_title">Our Team</h3>
           <p data-i18n="about_team_text">Our consultant network spans infrastructure, security, project management, and IT operations — all with hands-on experience serving multinationals in Korea and across APAC.</p>
           <ul class="about-highlights">
@@ -541,6 +688,9 @@
           </ul>
         </div>
         <div class="about-block">
+          <div class="about-block-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
           <h3 data-i18n="about_coverage_title">Where We Operate</h3>
           <ul class="about-coverage-list">
             <li><strong data-i18n="about_cov_primary_label">Primary:</strong> <span data-i18n="about_cov_primary">Seoul Metropolitan Area &amp; all major Korean cities</span></li>
@@ -550,14 +700,16 @@
         </div>
       </div>
     </div>
-    <div class="section-fade-bottom"></div>
   </section>
 
 
   <!-- ====== S10. FAQ ====== -->
   <section id="section-faq" class="section-light scroll-reveal">
     <div class="container">
-      <h2 class="section-title" data-i18n="faq_title">Frequently Asked Questions</h2>
+      <div class="section-header">
+        <span class="section-label">FAQ</span>
+        <h2 class="section-title" data-i18n="faq_title">Frequently Asked Questions</h2>
+      </div>
 
       <div class="faq-list">
         <div class="faq-item">
@@ -595,15 +747,17 @@
 
   <!-- ====== S11. 문의하기 ====== -->
   <section id="section-contact" class="section-dark scroll-reveal">
-    <div class="section-fade-top"></div>
     <div class="container">
-      <h2 class="section-title" data-i18n="contact_title">Let's Discuss Your IT Needs</h2>
-      <p class="section-subtitle" data-i18n="contact_subtitle">Tell us about your Korea IT challenges. Our team will get back to you within one business day.</p>
+      <div class="section-header">
+        <span class="section-label">Contact</span>
+        <h2 class="section-title" data-i18n="contact_title">Let's Discuss Your IT Needs</h2>
+        <p class="section-subtitle" data-i18n="contact_subtitle">Tell us about your Korea IT challenges. Our team will get back to you within one business day.</p>
+      </div>
 
-            <!-- 문의 폼 -->
+      <!-- 문의 폼 -->
       <div class="contact-grid">
         <form class="contact-form" id="contact-form"
-              action="https://formspree.io/f/xwvwjngo"
+              action="https://nexthub-site-01.sckim805.workers.dev"
               method="POST">
 
           <!-- Formspree 설정 -->
@@ -662,20 +816,40 @@
         <div class="contact-direct">
           <h3 data-i18n="contact_direct_title">Prefer to reach us directly?</h3>
           <div class="contact-item">
-            <span class="contact-icon">📧</span>
-            <div><p class="contact-label" data-i18n="contact_email_label">Business Inquiries</p><a href="mailto:contact@nexthub.me">contact@nexthub.me</a></div>
+            <div class="contact-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <p class="contact-label" data-i18n="contact_email_label">Business Inquiries</p>
+              <a href="mailto:contact@nexthub.me">contact@nexthub.me</a>
+            </div>
           </div>
           <div class="contact-item">
-            <span class="contact-icon">📞</span>
-            <div><p class="contact-label" data-i18n="contact_phone_label">Office</p><a href="tel:+821090108898">+82-10-9010-8898</a></div>
+            <div class="contact-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <div>
+              <p class="contact-label" data-i18n="contact_phone_label">Office</p>
+              <a href="tel:+821090108898">+82-10-9010-8898</a>
+            </div>
           </div>
           <div class="contact-item">
-            <span class="contact-icon">📍</span>
-            <div><p class="contact-label" data-i18n="contact_location_label">Location</p><p data-i18n="contact_location">Seoul, South Korea</p></div>
+            <div class="contact-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <p class="contact-label" data-i18n="contact_location_label">Location</p>
+              <p data-i18n="contact_location">Seoul, South Korea</p>
+            </div>
           </div>
           <div class="contact-item">
-            <span class="contact-icon">🕐</span>
-            <div><p class="contact-label" data-i18n="contact_hours_label">Business Hours</p><p data-i18n="contact_hours">Mon–Fri, 09:00–18:00 KST</p></div>
+            <div class="contact-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div>
+              <p class="contact-label" data-i18n="contact_hours_label">Business Hours</p>
+              <p data-i18n="contact_hours">Mon–Fri, 09:00–18:00 KST</p>
+            </div>
           </div>
         </div>
       </div>
@@ -705,27 +879,35 @@
         <h4 data-i18n="footer_company">Company</h4>
         <ul>
           <li><a href="#section-about" data-i18n="footer_about">About Us</a></li>
-          <!--
-          <li><a href="#section-cases" data-i18n="footer_cases">Case Studies</a></li>
-        -->
           <li><a href="#section-faq" data-i18n="footer_faq">FAQ</a></li>
           <li><a href="#section-contact" data-i18n="footer_contact">Contact</a></li>
         </ul>
       </div>
       <div class="footer-contact">
         <h4 data-i18n="footer_reach">Contact</h4>
-        <p>📧 contact@nexthub.me</p>
-        <p>📞 +82-10-9010-8898</p>
+        <div class="footer-contact-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <span>contact@nexthub.me</span>
+        </div>
+        <div class="footer-contact-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>+82-10-9010-8898</span>
+        </div>
       </div>
     </div>
     <div class="footer-bottom">
-      <div class="container">
+      <div class="container footer-bottom-inner">
         <p class="footer-copyright" data-i18n="footer_copyright">© 2025 NextHub. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#section-hero">Back to top ↑</a>
+        </div>
       </div>
     </div>
   </footer>
 
-  <button class="scroll-top-btn" id="scroll-top-btn" aria-label="Back to top">↑</button>
+  <button class="scroll-top-btn" id="scroll-top-btn" aria-label="Back to top">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
   <div class="mobile-sticky-cta" id="mobile-sticky-cta">
     <a href="#section-contact" class="btn-primary" data-i18n="nav_contact">Get a Quote</a>
   </div>
