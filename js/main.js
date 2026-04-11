@@ -144,7 +144,7 @@ function initActiveMenu() {
   sections.forEach(function(item) { observer.observe(item.section); });
 }
 
-// main.js — initHamburger 함수를 아래 내용으로 교체하세요
+// main.js — initHamburger 함수 수정
 function initHamburger() {
   var hamburger = document.getElementById("nav-hamburger");
   var overlay = document.getElementById("nav-overlay");
@@ -153,19 +153,18 @@ function initHamburger() {
 
   hamburger.addEventListener("click", function() {
     var isOpen = hamburger.classList.toggle("open");
-    overlay.classList.toggle("open");
     
     if (isOpen) {
-      // 1. 메뉴 열릴 때 본문 스크롤 방지
+      // 메뉴 열 때: 현재 스크롤 위치를 top에 적용
+      var scrollY = window.scrollY;
+      overlay.style.top = scrollY + "px"; 
+      overlay.classList.add("open");
       document.body.style.overflow = "hidden";
-      // 2. 혹시 발생할 수 있는 레이아웃 밀림 방지
-      document.body.style.position = "fixed";
-      document.body.style.width = "100%";
     } else {
-      // 3. 메뉴 닫을 때 스크롤 복구
+      // 메뉴 닫을 때
+      overlay.classList.remove("open");
       document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.width = "";
+      overlay.style.top = "0"; // 초기화
     }
   });
 
@@ -175,8 +174,7 @@ function initHamburger() {
       hamburger.classList.remove("open");
       overlay.classList.remove("open");
       document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.width = "";
+      overlay.style.top = "0";
     });
   });
 }
