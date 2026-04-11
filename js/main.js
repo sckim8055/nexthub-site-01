@@ -144,44 +144,24 @@ function initActiveMenu() {
   sections.forEach(function(item) { observer.observe(item.section); });
 }
 
-// main.js — initHamburger 함수 수정
 function initHamburger() {
   var hamburger = document.getElementById("nav-hamburger");
   var overlay = document.getElementById("nav-overlay");
-  var body = document.body;
-  var scrollY = 0;
 
   if (!hamburger || !overlay) return;
 
   hamburger.addEventListener("click", function() {
     var isOpen = hamburger.classList.toggle("open");
-    
-    if (isOpen) {
-      // 메뉴 열기
-      scrollY = window.scrollY; // 현재 스크롤 위치 저장
-      body.style.position = 'fixed';
-      body.style.top = `-${scrollY}px`; // 현재 위치에서 스크롤 고정
-      body.style.width = '100%';
-      overlay.classList.add("open");
-    } else {
-      // 메뉴 닫기
-      body.style.position = '';
-      body.style.top = '';
-      body.style.width = '';
-      window.scrollTo(0, scrollY); // 원래 스크롤 위치로 복귀
-      overlay.classList.remove("open");
-    }
+    overlay.classList.toggle("open");
+    document.body.style.overflow = isOpen ? "hidden" : "";
   });
 
-  // 링크 클릭 시 닫기
+  /* 링크 클릭 시 닫기 */
   overlay.querySelectorAll("a").forEach(function(link) {
     link.addEventListener("click", function() {
       hamburger.classList.remove("open");
-      body.style.position = '';
-      body.style.top = '';
-      body.style.width = '';
-      window.scrollTo(0, scrollY);
       overlay.classList.remove("open");
+      document.body.style.overflow = "";
     });
   });
 }
