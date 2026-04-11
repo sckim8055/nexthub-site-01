@@ -386,16 +386,19 @@ section { padding: var(--space-5xl) 0; position: relative; }
 .nav-overlay {
   display: none; 
   position: fixed; 
-  inset: 0; /* top, left, right, bottom 0과 동일 */
+  top: 0; /* JS에서 이 값을 동적으로 수정할 예정 */
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: rgba(0,0,0,0.97);
-  backdrop-filter: blur(30px); 
+  backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   z-index: 1001;
   flex-direction: column; 
   justify-content: center; 
   align-items: center;
-  padding: 0; /* 패딩 제거 */
   overflow-y: auto;
+  padding-top: var(--nav-height);
 }
 
 .nav-overlay.open { display: flex; }
