@@ -382,13 +382,13 @@ section { padding: var(--space-5xl) 0; position: relative; }
 .nav-hamburger.open span:nth-child(3) { transform:rotate(-45deg) translate(5px,-5px); }
 
 /* 모바일 오버레이 */
-..nav-overlay {
+.nav-overlay {
   display:none; position:fixed; inset:0;
   background:rgba(0,0,0,0.97);
   backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px);
   z-index:1001;
   flex-direction:column; justify-content:center; align-items:center;
-  padding: 0; /* 패딩 제거 */
+  padding:calc(var(--nav-height) + var(--space-lg)) var(--space-lg) var(--space-2xl);
   overflow-y:auto;
 }
 .nav-overlay.open { display:flex; }
@@ -396,9 +396,7 @@ section { padding: var(--space-5xl) 0; position: relative; }
 .nav-overlay-inner {
   display:flex; flex-direction:column; align-items:center;
   justify-content:center; width:100%; max-width:340px;
-  gap:var(--space-xl);
-  min-height: 100vh; /* 내부 컨텐츠가 최소 화면 높이를 가지게 함 */
-  padding: calc(var(--nav-height) + var(--space-lg)) var(--space-lg) var(--space-2xl); /* 패딩을 여기로 이동 */
+  gap:var(--space-xl); flex:1;
 }
 
 .nav-mobile-links {
