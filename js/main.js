@@ -148,6 +148,8 @@ function initActiveMenu() {
 function initHamburger() {
   var hamburger = document.getElementById("nav-hamburger");
   var overlay = document.getElementById("nav-overlay");
+  var body = document.body;
+  var scrollY = 0;
 
   if (!hamburger || !overlay) return;
 
@@ -155,26 +157,31 @@ function initHamburger() {
     var isOpen = hamburger.classList.toggle("open");
     
     if (isOpen) {
-      // 메뉴 열 때: 현재 스크롤 위치를 top에 적용
-      var scrollY = window.scrollY;
-      overlay.style.top = scrollY + "px"; 
+      // 메뉴 열기
+      scrollY = window.scrollY; // 현재 스크롤 위치 저장
+      body.style.position = 'fixed';
+      body.style.top = `-${scrollY}px`; // 현재 위치에서 스크롤 고정
+      body.style.width = '100%';
       overlay.classList.add("open");
-      document.body.style.overflow = "hidden";
     } else {
-      // 메뉴 닫을 때
+      // 메뉴 닫기
+      body.style.position = '';
+      body.style.top = '';
+      body.style.width = '';
+      window.scrollTo(0, scrollY); // 원래 스크롤 위치로 복귀
       overlay.classList.remove("open");
-      document.body.style.overflow = "";
-      overlay.style.top = "0"; // 초기화
     }
   });
 
-  /* 링크 클릭 시 닫기 */
+  // 링크 클릭 시 닫기
   overlay.querySelectorAll("a").forEach(function(link) {
     link.addEventListener("click", function() {
       hamburger.classList.remove("open");
+      body.style.position = '';
+      body.style.top = '';
+      body.style.width = '';
+      window.scrollTo(0, scrollY);
       overlay.classList.remove("open");
-      document.body.style.overflow = "";
-      overlay.style.top = "0";
     });
   });
 }
