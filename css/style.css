@@ -382,35 +382,23 @@ section { padding: var(--space-5xl) 0; position: relative; }
 .nav-hamburger.open span:nth-child(3) { transform:rotate(-45deg) translate(5px,-5px); }
 
 /* 모바일 오버레이 */
-/* style.css — 4. 내비게이션 (모바일 오버레이 수정) */
 .nav-overlay {
-  display: none; 
-  position: fixed; 
-  inset: 0;
-  background: rgba(0,0,0,0.97);
-  backdrop-filter: blur(30px); 
-  -webkit-backdrop-filter: blur(30px);
-  z-index: 1001;
-  flex-direction: column; 
-  justify-content: center; 
-  align-items: center;
-  overflow-y: auto;
-  height: 100dvh; /* 브라우저 툴바 높이까지 계산한 전체 높이 */
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.97);
+  backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px);
+  z-index:1001;
+  flex-direction:column; justify-content:center; align-items:center;
+  padding:calc(var(--nav-height) + var(--space-lg)) var(--space-lg) var(--space-2xl);
+  overflow-y:auto;
 }
-
-.nav-overlay.open { display: flex; }
+.nav-overlay.open { display:flex; }
 
 .nav-overlay-inner {
-  display: flex; 
-  flex-direction: column; 
-  align-items: center;
-  justify-content: center; 
-  width: 100%; 
-  max-width: 340px;
-  gap: var(--space-xl);
-  /* 상단 내비게이션 높이만큼 여백을 내부 컨텐츠에 줌 */
-  padding: calc(var(--nav-height) + var(--space-lg)) var(--space-md) var(--space-2xl);
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; width:100%; max-width:340px;
+  gap:var(--space-xl); flex:1;
 }
+
 .nav-mobile-links {
   display:flex; flex-direction:column; align-items:center;
   gap:0; width:100%;
