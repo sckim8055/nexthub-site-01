@@ -112,9 +112,8 @@ function initNavScroll() {
 }
 
 function initActiveMenu() {
-  /* 데스크탑 + 모바일 모든 nav 링크 */
   var desktopLinks = document.querySelectorAll(".nav-links a[href^='#section']");
-  var mobileLinks = document.querySelectorAll(".nav-mobile-links a[href^='#section']");
+  var mobileLinks  = document.querySelectorAll(".nav-slide-links a[href^='#section']");
   var allLinks = [].concat(
     Array.prototype.slice.call(desktopLinks),
     Array.prototype.slice.call(mobileLinks)
@@ -144,25 +143,64 @@ function initActiveMenu() {
   sections.forEach(function(item) { observer.observe(item.section); });
 }
 
+/* ================================================================
+   2-B. 모바일 슬라이드 패널
+   ================================================================ */
 function initHamburger() {
   var hamburger = document.getElementById("nav-hamburger");
-  var overlay = document.getElementById("nav-overlay");
+  var backdrop  = document.getElementById("nav-slide-backdrop");
+  var panel     = document.getElementById("nav-slide-panel");
+  var closeBtn  = document.getElementById("nav-slide-close");
 
-  if (!hamburger || !overlay) return;
+  if (!hamburger || !panel || !backdrop) {
+    console.warn("⚠️ Slide panel elements not found");
+    return;
+  }
 
-  hamburger.addEventListener("click", function() {
-    var isOpen = hamburger.classList.toggle("open");
-    overlay.classList.toggle("open");
-    document.body.style.overflow = isOpen ? "hidden" : "";
+  function openPanel() {
+    hamburger.classList.add("open");
+    backdrop.classList.add("open");
+    panel.classList.add("open");
+    document.body.classList.add("nav-panel-open");
+  }
+
+  function closePanel() {
+    hamburger.classList.remove("open");
+    backdrop.classList.remove("open");
+    panel.classList.remove("open");
+    document.body.classList.remove("nav-panel-open");
+  }
+
+  hamburger.addEventListener("click", function(e) {
+    e.stopPropagation();
+    if (panel.classList.contains("open")) {
+      closePanel();
+    } else {
+      openPanel();
+    }
   });
 
-  /* 링크 클릭 시 닫기 */
-  overlay.querySelectorAll("a").forEach(function(link) {
-    link.addEventListener("click", function() {
-      hamburger.classList.remove("open");
-      overlay.classList.remove("open");
-      document.body.style.overflow = "";
+  if (closeBtn) {
+    closeBtn.addEventListener("click", function(e) {
+      e.stopPropagation();
+      closePanel();
     });
+  }
+
+  backdrop.addEventListener("click", function() {
+    closePanel();
+  });
+
+  panel.querySelectorAll("a[href^='#']").forEach(function(link) {
+    link.addEventListener("click", function() {
+      closePanel();
+    });
+  });
+
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape" && panel.classList.contains("open")) {
+      closePanel();
+    }
   });
 }
 
@@ -195,23 +233,22 @@ function initSmoothScroll() {
 
       e.preventDefault();
 
+      /* 슬라이드 패널이 열려있으면 먼저 닫기 */
+      var panel = document.getElementById("nav-slide-panel");
+      if (panel && panel.classList.contains("open")) {
+        document.getElementById("nav-hamburger").classList.remove("open");
+        document.getElementById("nav-slide-backdrop").classList.remove("open");
+        panel.classList.remove("open");
+        document.body.classList.remove("nav-panel-open");
+      }
+
       var navH = document.getElementById("nav-bar").offsetHeight;
       var pos = target.getBoundingClientRect().top + window.pageYOffset - navH;
 
-      window.scrollTo({ top:pos, behavior:"smooth" });
-
-      /* 모바일 메뉴 닫기 */
-      var hamburger = document.getElementById("nav-hamburger");
-      var overlay = document.getElementById("nav-overlay");
-      if (hamburger && hamburger.classList.contains("open")) {
-        hamburger.classList.remove("open");
-        overlay.classList.remove("open");
-        document.body.style.overflow = "";
-      }
+      window.scrollTo({ top: pos, behavior: "smooth" });
     });
   });
 }
-
 
 /* ================================================================
    5. 숫자 카운터
