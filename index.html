@@ -23,6 +23,9 @@
 <body>
 
   <!-- ====== S0. 내비게이션 (Autodesk 적응형) ====== -->
+  <!-- 기존 nav 내부에서 슬라이드 패널 관련 코드를 삭제하고 -->
+  <!-- nav 태그를 아래처럼 정리 -->
+
   <nav id="nav-bar">
     <div class="nav-inner">
       <!-- 로고 -->
@@ -30,12 +33,11 @@
         <span class="logo-next">Next</span><span class="logo-hub">Hub</span>
       </a>
 
-      <!-- 데스크탑 메인 메뉴 (Autodesk 스타일 — 중앙 배치) -->
+      <!-- 데스크탑 메인 메뉴 -->
       <div class="nav-center-menu" id="nav-center-menu">
         <ul class="nav-links" id="nav-links">
           <li class="nav-item has-mega">
             <a href="#section-services" data-i18n="nav_services">Services</a>
-            <!-- 메가메뉴 드롭다운 -->
             <div class="mega-menu">
               <div class="mega-inner">
                 <div class="mega-col">
@@ -99,7 +101,6 @@
 
       <!-- 오른쪽: 언어 + CTA -->
       <div class="nav-right">
-        <!-- Autodesk 스타일 언어 드롭다운 -->
         <div class="lang-dropdown" id="lang-dropdown">
           <button class="lang-trigger" id="lang-trigger" aria-expanded="false">
             <svg class="lang-globe-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -136,7 +137,6 @@
             </div>
           </div>
         </div>
-
         <a href="#section-contact" class="btn-nav-cta desktop-only" data-i18n="nav_contact">Get a Quote</a>
       </div>
 
@@ -145,42 +145,54 @@
         <span></span><span></span><span></span>
       </button>
     </div>
-
-    <!-- 모바일: 풀스크린 오버레이 메뉴 -->
-    <div class="nav-overlay" id="nav-overlay">
-      <div class="nav-overlay-inner">
-        <ul class="nav-mobile-links">
-          <li><a href="#section-services" data-i18n="nav_services">Services</a></li>
-          <li><a href="#section-whyus" data-i18n="nav_whyus">Why Us</a></li>
-          <li><a href="#section-process" data-i18n="nav_process">How We Work</a></li>
-          <li><a href="#section-about" data-i18n="nav_about">About</a></li>
-          <li><a href="#section-faq" data-i18n="nav_faq">FAQ</a></li>
-        </ul>
-
-        <div class="nav-mobile-bottom">
-          <div class="mobile-lang-list">
-            <p class="mobile-lang-label">Language</p>
-            <div class="mobile-lang-options">
-              <button class="mobile-lang-option active" data-lang="en">
-                <span class="mobile-lang-name">English</span>
-                <span class="mobile-lang-check">✓</span>
-              </button>
-              <button class="mobile-lang-option" data-lang="ko">
-                <span class="mobile-lang-name">한국어</span>
-                <span class="mobile-lang-check">✓</span>
-              </button>
-              <button class="mobile-lang-option" data-lang="zh">
-                <span class="mobile-lang-name">中文</span>
-                <span class="mobile-lang-check">✓</span>
-              </button>
-            </div>
-          </div>
-          <a href="#section-contact" class="btn-primary mobile-cta" data-i18n="nav_contact">Get a Quote</a>
-        </div>
-      </div>
-    </div>
   </nav>
 
+  <!-- ★★★ 모바일 슬라이드 패널 — nav 바깥에 위치 ★★★ -->
+  <div class="nav-slide-backdrop" id="nav-slide-backdrop"></div>
+  <div class="nav-slide-panel" id="nav-slide-panel">
+    <div class="nav-slide-header">
+      <span class="nav-slide-title">Menu</span>
+      <button class="nav-slide-close" id="nav-slide-close" aria-label="Close menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="nav-slide-body">
+      <ul class="nav-slide-links">
+        <li><a href="#section-services" data-i18n="nav_services">Services</a></li>
+        <li><a href="#section-whyus" data-i18n="nav_whyus">Why Us</a></li>
+        <li><a href="#section-process" data-i18n="nav_process">How We Work</a></li>
+        <li><a href="#section-about" data-i18n="nav_about">About</a></li>
+        <li><a href="#section-faq" data-i18n="nav_faq">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="nav-slide-footer">
+      <div class="mobile-lang-list">
+        <p class="mobile-lang-label">Language</p>
+        <div class="mobile-lang-options">
+          <button class="mobile-lang-option active" data-lang="en">
+            <span class="mobile-lang-name">English</span>
+            <span class="mobile-lang-check">✓</span>
+          </button>
+          <button class="mobile-lang-option" data-lang="ko">
+            <span class="mobile-lang-name">한국어</span>
+            <span class="mobile-lang-check">✓</span>
+          </button>
+          <button class="mobile-lang-option" data-lang="zh">
+            <span class="mobile-lang-name">中文</span>
+            <span class="mobile-lang-check">✓</span>
+          </button>
+        </div>
+      </div>
+      <a href="#section-contact" class="btn-primary mobile-cta" data-i18n="nav_contact">Get a Quote</a>
+    </div>
+  </div>
+  <!-- ★★★ 슬라이드 패널 끝 ★★★ -->
+
+
+  <!-- ====== S1. 히어로 ====== -->
+  <section id="section-hero">
 
   <!-- ====== S1. 히어로 (풀스크린 시네마틱) ====== -->
   <section id="section-hero">
