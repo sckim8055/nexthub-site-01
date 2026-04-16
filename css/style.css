@@ -1698,3 +1698,18 @@ body.nav-panel-open {
   border: 1px solid rgba(234, 179, 8, 0.2);
   color: #eab308;
 }
+
+/* ================================================================
+   26. 언어별 폰트
+   ================================================================ */
+html[lang="ko"] {
+  --font-main: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+html[lang="ko"] body,
+html[lang="ko"] input,
+html[lang="ko"] select,
+html[lang="ko"] textarea,
+html[lang="ko"] button {
+  font-family: var(--font-main);
+}

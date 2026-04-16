@@ -1,5 +1,5 @@
 /* ================================================================
-   main.js — NextHub (Autodesk Redesign)
+   main.js — NextHub (Auto Redesign)
    ================================================================ */
 
 var currentLang = "en";
@@ -564,6 +564,6 @@ document.addEventListener("DOMContentLoaded", function() {
   initViewportHeight();
   initHeroParallax();
 
-  console.log("✅ NextHub loaded (Autodesk Style)");
+  console.log("✅ NextHub loaded");
   console.log("🌐 Lang:", currentLang);
 });
