@@ -51,6 +51,7 @@ const CONTENT = {
        ---------------------------------------- */
     hero_headline: "Your Dedicated IT Team<br>in Korea",
     hero_subtitle: "We run IT operations for multinational companies in Korea — so your HQ doesn't have to worry about the local side.",
+    hero_eyebrow: "IT Operations for MNCs in Korea",
     hero_badge_1: "Onsite & Remote Support",
     hero_badge_2: "Cybersecurity",
     hero_badge_3: "Consulting",
@@ -407,6 +408,7 @@ const CONTENT = {
        ---------------------------------------- */
     hero_headline: "한국 IT 운영,<br>넥스트허브에 맡기세요",
     hero_subtitle: "다국적 기업의 한국 지사 IT를 통합 운영합니다. 본사가 현지 IT를 걱정할 필요가 없도록.",
+    hero_eyebrow: "한국 진출 다국적기업을 위한 IT 운영",
     hero_badge_1: "현장·원격 지원",
     hero_badge_2: "사이버 보안",
     hero_badge_3: "컨설팅",
@@ -750,6 +752,7 @@ const CONTENT = {
        ---------------------------------------- */
     hero_headline: "韩国IT运营<br>就找NextHub",
     hero_subtitle: "为跨国企业的韩国分公司提供一站式IT运营服务，让总部不再操心当地IT事务。",
+    hero_eyebrow: "为在韩跨国企业提供IT运营",
     hero_badge_1: "现场与远程支持",
     hero_badge_2: "网络安全",
     hero_badge_3: "咨询",
