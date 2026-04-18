@@ -45,6 +45,9 @@ const CONTENT = {
     nav_about: "About",
     nav_faq: "FAQ",
     nav_contact: "Get a Quote",
+    mega_cta_title: "Need help choosing?",
+    mega_cta_desc: "Tell us about your Korea IT challenges and we'll recommend the right solution.",
+    mega_cta_btn: "Get a Free Consultation",
 
     /* ----------------------------------------
        히어로 섹션 — #section-hero
@@ -402,6 +405,9 @@ const CONTENT = {
     nav_about: "회사 소개",
     nav_faq: "FAQ",
     nav_contact: "문의하기",
+    mega_cta_title: "어떤 서비스가 맞을지 모르겠나요?",
+    mega_cta_desc: "한국 IT 관련 고민을 알려주시면, 최적의 솔루션을 추천해 드립니다.",
+    mega_cta_btn: "무료 상담 신청",
 
     /* ----------------------------------------
        히어로 섹션
@@ -746,7 +752,9 @@ const CONTENT = {
     nav_about: "关于我们",
     nav_faq: "常见问题",
     nav_contact: "联系我们",
-
+    mega_cta_title: "不知道选哪项服务？",
+    mega_cta_desc: "告诉我们您在韩国的IT需求，我们会推荐最合适的方案。",
+    mega_cta_btn: "免费咨询",
     /* ----------------------------------------
        首屏
        ---------------------------------------- */
