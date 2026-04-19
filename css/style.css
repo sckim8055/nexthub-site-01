@@ -1732,13 +1732,13 @@ html[lang="ko"] button {
 
 /* 언어별 폰트 적용 */
 html[lang="ko"] .field-error-msg {
-  font-family: 'Pretendard Variable', 'Noto Sans KR', -apple-system, sans-serif;
+  font-family: 'Pretendard Variable', 'Noto Sans KR', sans-serif;
 }
 
 html[lang="zh-CN"] .field-error-msg {
-  font-family: 'Noto Sans SC', -apple-system, sans-serif;
+  font-family: 'Noto Sans SC', sans-serif;
 }
 
 html[lang="en"] .field-error-msg {
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family: 'Inter', sans-serif;
 }
