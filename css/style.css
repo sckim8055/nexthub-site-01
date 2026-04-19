@@ -382,173 +382,44 @@ section { padding: var(--space-5xl) 0; position: relative; }
 .nav-hamburger.open span:nth-child(3) { transform:rotate(-45deg) translate(5px,-5px); }
 
 /* 모바일 오버레이 */
-/* ================================================================
-   4-C. 모바일 슬라이드 패널 (nav 바깥, body 직속)
-   ================================================================ */
+.nav-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.97);
+  backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px);
+  z-index:1001;
+  flex-direction:column; justify-content:center; align-items:center;
+  padding:calc(var(--nav-height) + var(--space-lg)) var(--space-lg) var(--space-2xl);
+  overflow-y:auto;
+}
+.nav-overlay.open { display:flex; }
 
-/* 반투명 배경 */
-.nav-slide-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0);
-  z-index: 9998;
-  pointer-events: none;
-  transition: background 0.4s ease;
-  -webkit-tap-highlight-color: transparent;
+.nav-overlay-inner {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; width:100%; max-width:340px;
+  gap:var(--space-xl); flex:1;
 }
 
-.nav-slide-backdrop.open {
-  background: rgba(0, 0, 0, 0.55);
-  pointer-events: auto;
+.nav-mobile-links {
+  display:flex; flex-direction:column; align-items:center;
+  gap:0; width:100%;
+}
+.nav-mobile-links li { width:100%; text-align:center; }
+.nav-mobile-links a {
+  display:flex; justify-content:center; align-items:center;
+  padding:16px 0; font-size:1.25rem; font-weight:600;
+  color:#fff; border-bottom:1px solid var(--color-border-dark);
+  min-height:56px;
+}
+.nav-mobile-links a:hover { color:var(--color-primary); }
+
+.nav-mobile-bottom {
+  display:flex; flex-direction:column; align-items:center;
+  gap:var(--space-lg); width:100%;
+}
+.mobile-cta {
+  width:100%; text-align:center; padding:16px 28px; font-size:1rem;
 }
 
-/* 오른쪽 슬라이드 패널 */
-.nav-slide-panel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 320px;
-  max-width: 85vw;
-  height: 100%;
-  height: 100dvh;
-  background: #161b22;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  transform: translateX(100%);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-}
-
-.nav-slide-panel.open {
-  transform: translateX(0);
-}
-
-/* 패널 헤더 */
-.nav-slide-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  min-height: var(--nav-height);
-  height: var(--nav-height);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  flex-shrink: 0;
-  background: #161b22;
-}
-
-.nav-slide-title {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: #6e7681;
-}
-
-.nav-slide-close {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #8b949e;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
-
-.nav-slide-close:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-}
-
-/* 패널 본문 */
-.nav-slide-body {
-  flex: 1;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  padding: 8px 0;
-}
-
-.nav-slide-links {
-  display: flex;
-  flex-direction: column;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.nav-slide-links li {
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-
-.nav-slide-links li:last-child {
-  border-bottom: none;
-}
-
-.nav-slide-links a {
-  display: flex;
-  align-items: center;
-  padding: 18px 24px;
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: #f0f6fc;
-  text-decoration: none;
-  transition: all 0.25s ease;
-  min-height: 56px;
-}
-
-.nav-slide-links a:hover,
-.nav-slide-links a.active {
-  color: #0696D7;
-  background: rgba(6, 150, 215, 0.06);
-  padding-left: 28px;
-}
-
-/* 패널 푸터 */
-.nav-slide-footer {
-  flex-shrink: 0;
-  padding: 20px 24px;
-  padding-bottom: max(20px, env(safe-area-inset-bottom));
-  border-top: 1px solid rgba(255,255,255,0.06);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  background: #161b22;
-}
-
-.nav-slide-footer .mobile-cta {
-  width: 100%;
-  text-align: center;
-  padding: 16px 28px;
-  font-size: 1rem;
-}
-
-/* 스크롤 잠금 */
-body.nav-panel-open {
-  overflow: hidden !important;
-  position: relative;
-}
-
-/* ===== 데스크탑에서 완전 숨김 ===== */
-@media (min-width: 769px) {
-  .nav-slide-backdrop,
-  .nav-slide-panel {
-    display: none !important;
-    visibility: hidden !important;
-  }
-}
 
 /* ================================================================
    4-B. 언어 드롭다운
@@ -1698,18 +1569,31 @@ body.nav-panel-open {
   border: 1px solid rgba(234, 179, 8, 0.2);
   color: #eab308;
 }
-
-/* ================================================================
-   26. 언어별 폰트
-   ================================================================ */
-html[lang="ko"] {
-  --font-main: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+/* ====== 폼 유효성 에러 ====== */
+.form-field-error input,
+.form-field-error textarea,
+.form-field-error select {
+  border-color: #f85149 !important;
+  box-shadow: 0 0 0 2px rgba(248, 81, 73, 0.2) !important;
 }
 
-html[lang="ko"] body,
-html[lang="ko"] input,
-html[lang="ko"] select,
-html[lang="ko"] textarea,
-html[lang="ko"] button {
-  font-family: var(--font-main);
+.field-error-msg {
+  color: #f85149;
+  font-size: 13px;
+  margin: 6px 0 0;
+  padding: 0;
+  line-height: 1.4;
+}
+
+/* 언어별 폰트 적용 */
+html[lang="ko"] .field-error-msg {
+  font-family: 'Pretendard Variable', 'Noto Sans KR', -apple-system, sans-serif;
+}
+
+html[lang="zh-CN"] .field-error-msg {
+  font-family: 'Noto Sans SC', -apple-system, sans-serif;
+}
+
+html[lang="en"] .field-error-msg {
+  font-family: 'Inter', -apple-system, sans-serif;
 }
