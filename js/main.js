@@ -1,13 +1,5 @@
 /* ================================================================
-   main.js — NextHub (Final v5)
-   ================================================================
-   포함된 보안/기능:
-   - FORM_SECRET 클라이언트 노출 제거
-   - CSRF 토큰 서버 발급 (getCSRFToken)
-   - Cloudflare Turnstile (보이지 않음 모드)
-   - innerHTML XSS 방지
-   - 커스텀 폼 유효성 UI (언어별 + 폰트 적용)
-   - console.log 제거
+   main.js — NextHub (Final v5 - Fixed)
    ================================================================ */
 
 var currentLang = "en";
@@ -54,7 +46,6 @@ function switchLanguage(lang) {
   closeLangDropdown();
   localStorage.setItem("nexthub-lang", lang);
 
-  // 기존 에러 메시지 제거 (언어 변경 시)
   clearFieldErrors();
 }
 
@@ -404,7 +395,7 @@ function onTurnstileError() {
 
 
 /* ================================================================
-   11. 🔒 커스텀 폼 유효성 검사 (content.js 참조, 언어별 폰트 적용)
+   11. 🔒 커스텀 폼 유효성 검사
    ================================================================ */
 function clearFieldErrors() {
   document.querySelectorAll(".field-error-msg").forEach(function(el) {
@@ -422,7 +413,6 @@ function showFieldError(field, message) {
   errorEl.className = "field-error-msg";
   errorEl.textContent = message;
 
-  // 필드 바로 다음에 에러 메시지 삽입
   if (field.nextElementSibling && field.nextElementSibling.classList.contains("field-error-msg")) {
     field.nextElementSibling.remove();
   }
@@ -436,7 +426,6 @@ function validateForm(form) {
   var hasError = false;
   var firstErrorField = null;
 
-  // 이름 검증
   var nameField = document.getElementById("form-name");
   if (nameField && !nameField.value.trim()) {
     showFieldError(nameField, lang.form_valid_name);
@@ -444,7 +433,6 @@ function validateForm(form) {
     if (!firstErrorField) firstErrorField = nameField;
   }
 
-  // 회사 검증
   var companyField = document.getElementById("form-company");
   if (companyField && !companyField.value.trim()) {
     showFieldError(companyField, lang.form_valid_company);
@@ -452,7 +440,6 @@ function validateForm(form) {
     if (!firstErrorField) firstErrorField = companyField;
   }
 
-  // 이메일 검증
   var emailField = document.getElementById("form-email");
   if (emailField) {
     if (!emailField.value.trim()) {
@@ -466,7 +453,6 @@ function validateForm(form) {
     }
   }
 
-  // 첫 번째 에러 필드로 스크롤
   if (firstErrorField) {
     firstErrorField.focus();
     firstErrorField.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -477,7 +463,38 @@ function validateForm(form) {
 
 
 /* ================================================================
+   ★★★ 12-B. 폼 사용자 필드만 수동 리셋 (NEW)
+   ★★★ Turnstile 숨겨진 필드와 hidden 필드를 보호하기 위해
+   ★★★ form.reset() 대신 이 함수를 사용
+   ================================================================ */
+function resetFormFields(form) {
+  var fieldsToReset = [
+    "form-name", "form-company", "form-email",
+    "form-service", "form-size", "form-message"
+  ];
+
+  fieldsToReset.forEach(function(id) {
+    var field = document.getElementById(id);
+    if (field) {
+      if (field.tagName === "SELECT") {
+        field.selectedIndex = 0;
+      } else {
+        field.value = "";
+      }
+    }
+  });
+
+  // 파일 첨부 필드 리셋
+  var attachment = document.getElementById("form-attachment");
+  if (attachment) {
+    attachment.value = "";
+  }
+}
+
+
+/* ================================================================
    12. 🔒 문의 폼 (CSRF + Turnstile + 커스텀 유효성)
+   ★★★ 수정: form.reset() → resetFormFields() + Turnstile 토큰 안전 처리
    ================================================================ */
 function initContactForm() {
   var form = document.getElementById("contact-form");
@@ -511,7 +528,7 @@ function initContactForm() {
 
     if (submitBtn.disabled) return;
 
-    // 🔒 커스텀 유효성 검사 (브라우저 기본 대신)
+    // 🔒 커스텀 유효성 검사
     if (!validateForm(form)) {
       return;
     }
@@ -538,6 +555,9 @@ function initContactForm() {
       zh: "发送中..."
     })[currentLang] || "Sending...";
 
+    // ★★★ 수정: 제출 전에 현재 Turnstile 토큰을 로컬 변수에 저장 ★★★
+    var savedTurnstileToken = turnstileToken;
+
     // 🔒 서버에서 CSRF 토큰 발급받은 후 폼 제출
     getCSRFToken().then(function(data) {
       document.getElementById("form-ts").value = data.ts;
@@ -545,9 +565,15 @@ function initContactForm() {
 
       var endpoint = form.action;
 
+      // ★★★ 수정: FormData 생성 후 Turnstile 토큰을 수동으로 덮어쓰기 ★★★
+      // form.reset() 이후 Turnstile hidden input이 비어있을 수 있으므로
+      // 저장해둔 토큰을 강제로 설정
+      var fd = new FormData(form);
+      fd.set("cf-turnstile-response", savedTurnstileToken);
+
       return fetch(endpoint, {
         method: "POST",
-        body: new FormData(form),
+        body: fd,
         headers: { "Accept": "application/json" }
       });
     })
@@ -555,14 +581,25 @@ function initContactForm() {
     .then(function(response) {
       if (response.ok) {
         showFormMessage("success");
-        form.reset();
+
+        // ★★★ 수정: form.reset() 대신 사용자 필드만 수동 리셋 ★★★
+        // form.reset()은 Turnstile의 숨겨진 input까지 클리어하므로 사용 금지
+        resetFormFields(form);
         clearFieldErrors();
 
+        // ★★★ 수정: Turnstile을 안전하게 리셋 ★★★
         turnstileToken = "";
         turnstileReady = false;
         if (window.turnstile) {
-          turnstile.reset();
+          // 폼 내의 Turnstile 위젯 컨테이너를 지정하여 리셋
+          var turnstileEl = form.querySelector(".cf-turnstile");
+          if (turnstileEl) {
+            turnstile.reset(turnstileEl);
+          } else {
+            turnstile.reset();
+          }
         }
+
       } else {
         return response.json().then(function(data) {
           var detail = "";
@@ -591,9 +628,14 @@ function initContactForm() {
               ko: "보안 인증에 실패했습니다. 페이지를 새로고침 후 다시 시도해 주세요.",
               zh: "安全验证失败，请刷新页面后重试。"
             })[currentLang] || "Security verification failed.");
+            // ★★★ 수정: CAPTCHA 실패 시에도 안전하게 리셋 ★★★
             turnstileToken = "";
             turnstileReady = false;
-            if (window.turnstile) turnstile.reset();
+            if (window.turnstile) {
+              var te = form.querySelector(".cf-turnstile");
+              if (te) turnstile.reset(te);
+              else turnstile.reset();
+            }
           } else {
             showFormMessage("error", detail);
           }
