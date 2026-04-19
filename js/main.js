@@ -1,10 +1,13 @@
 /* ================================================================
-   main.js — NextHub (Security Hardened v3 + Turnstile)
+   main.js — NextHub (Final v4)
    ================================================================
-   변경 사항 (v2 → v3):
-   - Cloudflare Turnstile (Non-interactive) 연동 추가
-   - Turnstile 토큰 콜백, 만료, 에러 처리
-   - 폼 제출 시 Turnstile 토큰 검증 추가
+   포함된 보안/기능:
+   - FORM_SECRET 클라이언트 노출 제거
+   - CSRF 토큰 서버 발급 (getCSRFToken)
+   - Cloudflare Turnstile (Non-interactive / 보이지 않음)
+   - innerHTML XSS 방지
+   - 폼 유효성 메시지 다국어 (content.js 참조)
+   - console.log 제거
    ================================================================ */
 
 var currentLang = "en";
@@ -52,6 +55,9 @@ function switchLanguage(lang) {
 
   closeLangDropdown();
   localStorage.setItem("nexthub-lang", lang);
+
+  // 🔒 언어 변경 시 유효성 메시지도 업데이트
+  updateValidationMessages();
 }
 
 function toggleLangDropdown() {
@@ -378,11 +384,7 @@ function getCSRFToken() {
 
 
 /* ================================================================
-   10-B. 🔒 Cloudflare Turnstile 콜백 (Non-interactive)
-   ================================================================
-   - 페이지 로드 시 자동으로 백그라운드 검증
-   - 사용자에게 아무것도 보이지 않음
-   - 검증 완료되면 onTurnstileSuccess 자동 호출
+   10-B. 🔒 Cloudflare Turnstile 콜백 (보이지 않음 모드)
    ================================================================ */
 function onTurnstileSuccess(token) {
   turnstileToken = token;
@@ -392,7 +394,6 @@ function onTurnstileSuccess(token) {
 function onTurnstileExpired() {
   turnstileToken = "";
   turnstileReady = false;
-  // 자동으로 재검증 시도
   if (window.turnstile) {
     turnstile.reset();
   }
@@ -401,16 +402,59 @@ function onTurnstileExpired() {
 function onTurnstileError() {
   turnstileToken = "";
   turnstileReady = false;
-  // 에러 시에도 폼 제출은 가능하도록 (Worker에서 최종 판단)
 }
 
 
 /* ================================================================
-   11. 🔒 문의 폼 (CSRF + Turnstile)
+   11. 🔒 폼 유효성 메시지 (content.js 참조, 언어별)
+   ================================================================ */
+function updateValidationMessages() {
+  var lang = CONTENT[currentLang] || CONTENT.en;
+
+  var fields = [
+    { id: "form-name",    emptyKey: "form_valid_name",    invalidKey: null },
+    { id: "form-company", emptyKey: "form_valid_company",  invalidKey: null },
+    { id: "form-email",   emptyKey: "form_valid_email",    invalidKey: "form_valid_email_invalid" },
+    { id: "form-message", emptyKey: "form_valid_message",  invalidKey: null }
+  ];
+
+  fields.forEach(function(item) {
+    var field = document.getElementById(item.id);
+    if (!field) return;
+
+    // 기존 이벤트 중복 방지: clone으로 교체
+    var clone = field.cloneNode(true);
+    field.parentNode.replaceChild(clone, field);
+
+    clone.addEventListener("invalid", function() {
+      var langData = CONTENT[currentLang] || CONTENT.en;
+      if (this.value === "") {
+        this.setCustomValidity(langData[item.emptyKey] || "");
+      } else if (item.invalidKey) {
+        this.setCustomValidity(langData[item.invalidKey] || "");
+      }
+    });
+
+    clone.addEventListener("input", function() {
+      this.setCustomValidity("");
+    });
+
+    clone.addEventListener("change", function() {
+      this.setCustomValidity("");
+    });
+  });
+}
+
+
+/* ================================================================
+   12. 🔒 문의 폼 (CSRF + Turnstile + 유효성 메시지)
    ================================================================ */
 function initContactForm() {
   var form = document.getElementById("contact-form");
   if (!form) return;
+
+  // 🔒 초기 유효성 메시지 설정
+  updateValidationMessages();
 
   form.addEventListener("submit", function(e) {
     e.preventDefault();
@@ -422,7 +466,6 @@ function initContactForm() {
 
     // 🔒 Turnstile 토큰 확인
     if (!turnstileToken) {
-      // Turnstile이 아직 준비 안 된 경우 (네트워크 느린 경우 등)
       showFormMessage("error", ({
         en: "Security verification in progress. Please wait a moment and try again.",
         ko: "보안 인증 진행 중입니다. 잠시 후 다시 시도해 주세요.",
@@ -462,7 +505,7 @@ function initContactForm() {
         showFormMessage("success");
         form.reset();
 
-        // 🔒 Turnstile 리셋 (다음 제출을 위해)
+        // 🔒 Turnstile 리셋
         turnstileToken = "";
         turnstileReady = false;
         if (window.turnstile) {
@@ -496,7 +539,6 @@ function initContactForm() {
               ko: "보안 인증에 실패했습니다. 페이지를 새로고침 후 다시 시도해 주세요.",
               zh: "安全验证失败，请刷新页面后重试。"
             })[currentLang] || "Security verification failed.");
-            // Turnstile 리셋
             turnstileToken = "";
             turnstileReady = false;
             if (window.turnstile) turnstile.reset();
@@ -540,6 +582,7 @@ function showFormMessage(type, detail) {
       || '⚠️ <strong>Please check your file.</strong>';
 
   } else {
+    // 🔒 서버 응답 detail은 textContent로 안전하게 처리
     if (detail) {
       var icon = document.createTextNode("❌ ");
       var strong = document.createElement("strong");
@@ -568,7 +611,7 @@ function showFormMessage(type, detail) {
 
 
 /* ================================================================
-   12. 터치 감지
+   13. 터치 감지
    ================================================================ */
 function initTouchDetection() {
   if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
@@ -578,7 +621,7 @@ function initTouchDetection() {
 
 
 /* ================================================================
-   13. 뷰포트 높이
+   14. 뷰포트 높이
    ================================================================ */
 function initViewportHeight() {
   function set() {
@@ -593,7 +636,7 @@ function initViewportHeight() {
 
 
 /* ================================================================
-   14. 히어로 패럴랙스
+   15. 히어로 패럴랙스
    ================================================================ */
 function initHeroParallax() {
   var hero = document.getElementById("section-hero");
@@ -632,7 +675,7 @@ function initHeroParallax() {
 
 
 /* ================================================================
-   15. 초기화
+   16. 초기화
    ================================================================ */
 document.addEventListener("DOMContentLoaded", function() {
   initLanguageSwitcher();
