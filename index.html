@@ -24,9 +24,6 @@
 <body>
 
   <!-- ====== S0. 내비게이션 (Autodesk 적응형) ====== -->
-  <!-- 기존 nav 내부에서 슬라이드 패널 관련 코드를 삭제하고 -->
-  <!-- nav 태그를 아래처럼 정리 -->
-
   <nav id="nav-bar">
     <div class="nav-inner">
       <!-- 로고 -->
@@ -192,10 +189,8 @@
   <!-- ★★★ 슬라이드 패널 끝 ★★★ -->
 
 
-  <!-- ====== S1. 히어로 ====== -->
-  <section id="section-hero">
-
   <!-- ====== S1. 히어로 (풀스크린 시네마틱) ====== -->
+  <!-- 🔒 중복 <section id="section-hero"> 제거 — 하나만 남김 -->
   <section id="section-hero">
     <!-- 배경 비디오/이미지 영역 -->
     <div class="hero-bg" aria-hidden="true">
@@ -770,14 +765,18 @@
 
       <!-- 문의 폼 -->
       <div class="contact-grid">
+        <!-- 🔒 enctype 추가 -->
         <form class="contact-form" id="contact-form"
               action="https://nexthub-mail-01.sckim805.workers.dev"
-              method="POST">
+              method="POST"
+              enctype="multipart/form-data">
 
-          <!-- Formspree 설정 -->
-          <input type="hidden" name="_subject" value="[NextHub] New Inquiry" />          
+          <input type="hidden" name="_subject" value="[NextHub] New Inquiry" />
           <input type="hidden" name="_lang" id="form-lang" value="en" />
           <input type="text" name="_gotcha" style="display:none" />
+          <!-- 🔒 CSRF 토큰 필드 추가 -->
+          <input type="hidden" name="_token" id="form-token" value="" />
+          <input type="hidden" name="_ts" id="form-ts" value="" />
 
           <div class="form-row">
             <div class="form-group">

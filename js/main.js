@@ -1,11 +1,14 @@
 /* ================================================================
-   main.js — NextHub (Auto Redesign)
+   main.js — NextHub (Security Hardened)
    ================================================================ */
 
 var currentLang = "en";
 
 var LANG_NAMES = { en:"EN", ko:"KO", zh:"ZH" };
 var LANG_FULL_NAMES = { en:"English", ko:"한국어", zh:"中文" };
+
+// 🔒 CSRF 토큰 시크릿 (worker.js의 FORM_SECRET 환경변수와 동일해야 함)
+var FORM_SECRET = "nxhb2025secure";
 
 
 /* ================================================================
@@ -209,10 +212,8 @@ function initHamburger() {
    3. 메가메뉴 (데스크탑)
    ================================================================ */
 function initMegaMenu() {
-  /* 메가메뉴 내 링크 클릭 시 메뉴 닫기 */
   document.querySelectorAll(".mega-link, .mega-cta-card a").forEach(function(link) {
     link.addEventListener("click", function() {
-      /* hover 기반이므로 강제 blur */
       this.closest(".nav-item").querySelector("a").blur();
     });
   });
@@ -233,7 +234,6 @@ function initSmoothScroll() {
 
       e.preventDefault();
 
-      /* 슬라이드 패널이 열려있으면 먼저 닫기 */
       var panel = document.getElementById("nav-slide-panel");
       if (panel && panel.classList.contains("open")) {
         document.getElementById("nav-hamburger").classList.remove("open");
@@ -358,7 +358,23 @@ function initMobileStickyCTA() {
 
 
 /* ================================================================
-   10. 문의 폼 — Cloudflare Email 대응 준비
+   10. 🔒 CSRF 토큰 생성 함수
+   ================================================================ */
+function generateFormToken(timestamp) {
+  var data = new TextEncoder().encode(timestamp + ":" + FORM_SECRET);
+  return crypto.subtle.digest("SHA-256", data).then(function(hash) {
+    var arr = new Uint8Array(hash);
+    var hex = "";
+    for (var i = 0; i < arr.length; i++) {
+      hex += arr[i].toString(16).padStart(2, "0");
+    }
+    return hex.substring(0, 32);
+  });
+}
+
+
+/* ================================================================
+   11. 🔒 문의 폼 (보안 강화)
    ================================================================ */
 function initContactForm() {
   var form = document.getElementById("contact-form");
@@ -384,52 +400,73 @@ function initContactForm() {
       zh: "发送中..."
     })[currentLang] || "Sending...";
 
-    /* 
-     * Cloudflare Workers를 이용한 이메일 전송
-     * 아래 URL을 Cloudflare Worker 엔드포인트로 교체하세요.
-     * 현재는 Formspree를 fallback으로 사용합니다.
-     * 
-     * Cloudflare Worker 예시 URL:
-     * https://your-worker.your-subdomain.workers.dev/send-email
-     */
-    var endpoint = form.action; /* Cloudflare Worker URL로 교체 가능 */
+    // 🔒 토큰 생성 후 폼 제출
+    var ts = String(Date.now());
+    document.getElementById("form-ts").value = ts;
 
-    fetch(endpoint, {
-      method: "POST",
-      body: new FormData(form),
-      headers: { "Accept": "application/json" }
-    })
+    generateFormToken(ts).then(function(token) {
+      document.getElementById("form-token").value = token;
 
-    .then(function(response) {
-      if (response.ok) {
-        showFormMessage("success");
-        form.reset();
-      } else {
-        return response.json().then(function(data) {
-          var detail = "";
-          if (data.errors) {
-            detail = data.errors.map(function(err) {
-              return err.message;
-            }).join(", ");
-          }
-          // 파일 관련 안내는 별도 처리
-          if (data.error === "File too large" || data.error === "Invalid file type") {
-            showFormMessage("warning", detail);
-          } else {
-            showFormMessage("error", detail);
-          }
-        });
-      }
-    })
+      var endpoint = form.action;
 
-    .catch(function(err) {
-      console.error("Form submission error:", err);
-      showFormMessage("error");
-    })
-    .finally(function() {
+      fetch(endpoint, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { "Accept": "application/json" }
+      })
+
+      .then(function(response) {
+        if (response.ok) {
+          showFormMessage("success");
+          form.reset();
+        } else {
+          return response.json().then(function(data) {
+            var detail = "";
+            if (data.errors) {
+              detail = data.errors.map(function(err) {
+                return err.message;
+              }).join(", ");
+            }
+            if (data.error === "File too large" || data.error === "Invalid file type") {
+              showFormMessage("warning", detail);
+            } else if (data.error === "Invalid token" || data.error === "Token expired") {
+              // 🔒 토큰 오류 시 사용자에게 안내
+              showFormMessage("error", ({
+                en: "Session expired. Please reload the page and try again.",
+                ko: "세션이 만료되었습니다. 페이지를 새로고침 후 다시 시도해 주세요.",
+                zh: "会话已过期。请刷新页面后重试。"
+              })[currentLang] || "Session expired. Please reload and try again.");
+            } else if (data.error === "Too many requests") {
+              // 🔒 Rate limit 오류
+              showFormMessage("error", ({
+                en: "Too many requests. Please try again later.",
+                ko: "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.",
+                zh: "请求过多，请稍后再试。"
+              })[currentLang] || "Too many requests. Please try again later.");
+            } else {
+              showFormMessage("error", detail);
+            }
+          });
+        }
+      })
+
+      .catch(function(err) {
+        console.error("Form submission error:", err);
+        showFormMessage("error");
+      })
+      .finally(function() {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = "1";
+        submitBtn.textContent = originalText;
+      });
+
+    }).catch(function(err) {
+      // 🔒 토큰 생성 실패 시 (crypto API 미지원 등)
+      console.error("Token generation error:", err);
       submitBtn.disabled = false;
       submitBtn.style.opacity = "1";
       submitBtn.textContent = originalText;
+      showFormMessage("error");
     });
   });
 }
@@ -446,7 +483,6 @@ function showFormMessage(type, detail) {
       || '✅ <strong>Thank you!</strong> We received your inquiry and will respond within 1 business day.';
 
   } else if (type === "warning") {
-    // detail에 따라 적절한 메시지 선택
     var warnKey = "form_warn_default";
     if (detail && detail.indexOf("10MB") >= 0) {
       warnKey = "form_warn_file_size";
@@ -457,10 +493,12 @@ function showFormMessage(type, detail) {
       || '⚠️ <strong>Please check your file.</strong>';
 
   } else {
-    msg.innerHTML = CONTENT[currentLang]["form_error"]
-      || '❌ <strong>Something went wrong.</strong> Please email us at <a href="mailto:contact@nexthub.me" style="color:inherit;text-decoration:underline;">contact@nexthub.me</a>';
+    // 🔒 detail이 있으면 우선 사용 (토큰/레이트리밋 등 커스텀 메시지)
     if (detail) {
-      msg.innerHTML += '<br><small style="opacity:0.7">' + detail + '</small>';
+      msg.innerHTML = '❌ <strong>' + detail + '</strong>';
+    } else {
+      msg.innerHTML = CONTENT[currentLang]["form_error"]
+        || '❌ <strong>Something went wrong.</strong> Please email us at <a href="mailto:contact@nexthub.me" style="color:inherit;text-decoration:underline;">contact@nexthub.me</a>';
     }
   }
 
@@ -480,7 +518,7 @@ function showFormMessage(type, detail) {
 
 
 /* ================================================================
-   11. 터치 감지
+   12. 터치 감지
    ================================================================ */
 function initTouchDetection() {
   if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
@@ -490,7 +528,7 @@ function initTouchDetection() {
 
 
 /* ================================================================
-   12. 뷰포트 높이
+   13. 뷰포트 높이
    ================================================================ */
 function initViewportHeight() {
   function set() {
@@ -505,7 +543,7 @@ function initViewportHeight() {
 
 
 /* ================================================================
-   13. 히어로 패럴랙스 (미세한 마우스 추적)
+   14. 히어로 패럴랙스 (미세한 마우스 추적)
    ================================================================ */
 function initHeroParallax() {
   var hero = document.getElementById("section-hero");
@@ -514,12 +552,11 @@ function initHeroParallax() {
   var cards = hero.querySelectorAll(".scene-card");
   var nodes = hero.querySelectorAll(".scene-node");
 
-  /* 모바일에서는 비활성화 */
   if (window.innerWidth < 768) return;
 
   hero.addEventListener("mousemove", function(e) {
     var rect = hero.getBoundingClientRect();
-    var x = (e.clientX - rect.left) / rect.width - 0.5;  /* -0.5 ~ 0.5 */
+    var x = (e.clientX - rect.left) / rect.width - 0.5;
     var y = (e.clientY - rect.top) / rect.height - 0.5;
 
     cards.forEach(function(card, i) {
@@ -545,7 +582,7 @@ function initHeroParallax() {
 
 
 /* ================================================================
-   14. 초기화
+   15. 초기화
    ================================================================ */
 document.addEventListener("DOMContentLoaded", function() {
   initLanguageSwitcher();
@@ -564,6 +601,6 @@ document.addEventListener("DOMContentLoaded", function() {
   initViewportHeight();
   initHeroParallax();
 
-  console.log("✅ NextHub loaded");
+  console.log("✅ NextHub loaded (Security Hardened)");
   console.log("🌐 Lang:", currentLang);
 });
