@@ -1569,3 +1569,31 @@ section { padding: var(--space-5xl) 0; position: relative; }
   border: 1px solid rgba(234, 179, 8, 0.2);
   color: #eab308;
 }
+/* ====== 폼 유효성 에러 ====== */
+.form-field-error input,
+.form-field-error textarea,
+.form-field-error select {
+  border-color: #f85149 !important;
+  box-shadow: 0 0 0 2px rgba(248, 81, 73, 0.2) !important;
+}
+
+.field-error-msg {
+  color: #f85149;
+  font-size: 13px;
+  margin: 6px 0 0;
+  padding: 0;
+  line-height: 1.4;
+}
+
+/* 언어별 폰트 적용 */
+html[lang="ko"] .field-error-msg {
+  font-family: 'Pretendard Variable', 'Noto Sans KR', -apple-system, sans-serif;
+}
+
+html[lang="zh-CN"] .field-error-msg {
+  font-family: 'Noto Sans SC', -apple-system, sans-serif;
+}
+
+html[lang="en"] .field-error-msg {
+  font-family: 'Inter', -apple-system, sans-serif;
+}

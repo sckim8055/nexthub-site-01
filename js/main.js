@@ -1,12 +1,12 @@
 /* ================================================================
-   main.js — NextHub (Final v4)
+   main.js — NextHub (Final v5)
    ================================================================
    포함된 보안/기능:
    - FORM_SECRET 클라이언트 노출 제거
    - CSRF 토큰 서버 발급 (getCSRFToken)
-   - Cloudflare Turnstile (Non-interactive / 보이지 않음)
+   - Cloudflare Turnstile (보이지 않음 모드)
    - innerHTML XSS 방지
-   - 폼 유효성 메시지 다국어 (content.js 참조)
+   - 커스텀 폼 유효성 UI (언어별 + 폰트 적용)
    - console.log 제거
    ================================================================ */
 
@@ -15,10 +15,8 @@ var currentLang = "en";
 var LANG_NAMES = { en:"EN", ko:"KO", zh:"ZH" };
 var LANG_FULL_NAMES = { en:"English", ko:"한국어", zh:"中文" };
 
-// 🔒 Worker endpoint
 var WORKER_ENDPOINT = "https://nexthub-mail-01.sckim805.workers.dev";
 
-// 🔒 Turnstile 토큰 상태
 var turnstileToken = "";
 var turnstileReady = false;
 
@@ -56,8 +54,8 @@ function switchLanguage(lang) {
   closeLangDropdown();
   localStorage.setItem("nexthub-lang", lang);
 
-  // 🔒 언어 변경 시 유효성 메시지도 업데이트
-  updateValidationMessages();
+  // 기존 에러 메시지 제거 (언어 변경 시)
+  clearFieldErrors();
 }
 
 function toggleLangDropdown() {
@@ -384,7 +382,7 @@ function getCSRFToken() {
 
 
 /* ================================================================
-   10-B. 🔒 Cloudflare Turnstile 콜백 (보이지 않음 모드)
+   10-B. 🔒 Cloudflare Turnstile 콜백
    ================================================================ */
 function onTurnstileSuccess(token) {
   turnstileToken = token;
@@ -406,55 +404,104 @@ function onTurnstileError() {
 
 
 /* ================================================================
-   11. 🔒 폼 유효성 메시지 (content.js 참조, 언어별)
+   11. 🔒 커스텀 폼 유효성 검사 (content.js 참조, 언어별 폰트 적용)
    ================================================================ */
-function updateValidationMessages() {
-  var lang = CONTENT[currentLang] || CONTENT.en;
-
-  var fields = [
-    { id: "form-name",    emptyKey: "form_valid_name",    invalidKey: null },
-    { id: "form-company", emptyKey: "form_valid_company",  invalidKey: null },
-    { id: "form-email",   emptyKey: "form_valid_email",    invalidKey: "form_valid_email_invalid" },
-    { id: "form-message", emptyKey: "form_valid_message",  invalidKey: null }
-  ];
-
-  fields.forEach(function(item) {
-    var field = document.getElementById(item.id);
-    if (!field) return;
-
-    // 기존 이벤트 중복 방지: clone으로 교체
-    var clone = field.cloneNode(true);
-    field.parentNode.replaceChild(clone, field);
-
-    clone.addEventListener("invalid", function() {
-      var langData = CONTENT[currentLang] || CONTENT.en;
-      if (this.value === "") {
-        this.setCustomValidity(langData[item.emptyKey] || "");
-      } else if (item.invalidKey) {
-        this.setCustomValidity(langData[item.invalidKey] || "");
-      }
-    });
-
-    clone.addEventListener("input", function() {
-      this.setCustomValidity("");
-    });
-
-    clone.addEventListener("change", function() {
-      this.setCustomValidity("");
-    });
+function clearFieldErrors() {
+  document.querySelectorAll(".field-error-msg").forEach(function(el) {
+    el.remove();
   });
+  document.querySelectorAll(".form-field-error").forEach(function(el) {
+    el.classList.remove("form-field-error");
+  });
+}
+
+function showFieldError(field, message) {
+  field.closest(".form-group").classList.add("form-field-error");
+
+  var errorEl = document.createElement("p");
+  errorEl.className = "field-error-msg";
+  errorEl.textContent = message;
+
+  // 필드 바로 다음에 에러 메시지 삽입
+  if (field.nextElementSibling && field.nextElementSibling.classList.contains("field-error-msg")) {
+    field.nextElementSibling.remove();
+  }
+  field.parentNode.appendChild(errorEl);
+}
+
+function validateForm(form) {
+  clearFieldErrors();
+
+  var lang = CONTENT[currentLang] || CONTENT.en;
+  var hasError = false;
+  var firstErrorField = null;
+
+  // 이름 검증
+  var nameField = document.getElementById("form-name");
+  if (nameField && !nameField.value.trim()) {
+    showFieldError(nameField, lang.form_valid_name);
+    hasError = true;
+    if (!firstErrorField) firstErrorField = nameField;
+  }
+
+  // 회사 검증
+  var companyField = document.getElementById("form-company");
+  if (companyField && !companyField.value.trim()) {
+    showFieldError(companyField, lang.form_valid_company);
+    hasError = true;
+    if (!firstErrorField) firstErrorField = companyField;
+  }
+
+  // 이메일 검증
+  var emailField = document.getElementById("form-email");
+  if (emailField) {
+    if (!emailField.value.trim()) {
+      showFieldError(emailField, lang.form_valid_email);
+      hasError = true;
+      if (!firstErrorField) firstErrorField = emailField;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailField.value.trim())) {
+      showFieldError(emailField, lang.form_valid_email_invalid);
+      hasError = true;
+      if (!firstErrorField) firstErrorField = emailField;
+    }
+  }
+
+  // 첫 번째 에러 필드로 스크롤
+  if (firstErrorField) {
+    firstErrorField.focus();
+    firstErrorField.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  return !hasError;
 }
 
 
 /* ================================================================
-   12. 🔒 문의 폼 (CSRF + Turnstile + 유효성 메시지)
+   12. 🔒 문의 폼 (CSRF + Turnstile + 커스텀 유효성)
    ================================================================ */
 function initContactForm() {
   var form = document.getElementById("contact-form");
   if (!form) return;
 
-  // 🔒 초기 유효성 메시지 설정
-  updateValidationMessages();
+  // 입력 시 해당 필드 에러 제거
+  form.querySelectorAll("input, textarea, select").forEach(function(field) {
+    field.addEventListener("input", function() {
+      var group = this.closest(".form-group");
+      if (group) {
+        group.classList.remove("form-field-error");
+        var err = group.querySelector(".field-error-msg");
+        if (err) err.remove();
+      }
+    });
+    field.addEventListener("change", function() {
+      var group = this.closest(".form-group");
+      if (group) {
+        group.classList.remove("form-field-error");
+        var err = group.querySelector(".field-error-msg");
+        if (err) err.remove();
+      }
+    });
+  });
 
   form.addEventListener("submit", function(e) {
     e.preventDefault();
@@ -463,6 +510,11 @@ function initContactForm() {
     var originalText = submitBtn.textContent;
 
     if (submitBtn.disabled) return;
+
+    // 🔒 커스텀 유효성 검사 (브라우저 기본 대신)
+    if (!validateForm(form)) {
+      return;
+    }
 
     // 🔒 Turnstile 토큰 확인
     if (!turnstileToken) {
@@ -504,8 +556,8 @@ function initContactForm() {
       if (response.ok) {
         showFormMessage("success");
         form.reset();
+        clearFieldErrors();
 
-        // 🔒 Turnstile 리셋
         turnstileToken = "";
         turnstileReady = false;
         if (window.turnstile) {
@@ -582,7 +634,6 @@ function showFormMessage(type, detail) {
       || '⚠️ <strong>Please check your file.</strong>';
 
   } else {
-    // 🔒 서버 응답 detail은 textContent로 안전하게 처리
     if (detail) {
       var icon = document.createTextNode("❌ ");
       var strong = document.createElement("strong");
