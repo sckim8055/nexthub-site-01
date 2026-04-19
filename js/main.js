@@ -1,11 +1,10 @@
 /* ================================================================
-   main.js — NextHub (Security Hardened v2)
+   main.js — NextHub (Security Hardened v3 + Turnstile)
    ================================================================
-   변경 사항:
-   - FORM_SECRET 클라이언트 노출 제거
-   - generateFormToken() 제거 → getCSRFToken() 서버 요청 방식
-   - innerHTML XSS 취약점 수정
-   - 프로덕션 console.log 제거
+   변경 사항 (v2 → v3):
+   - Cloudflare Turnstile (Non-interactive) 연동 추가
+   - Turnstile 토큰 콜백, 만료, 에러 처리
+   - 폼 제출 시 Turnstile 토큰 검증 추가
    ================================================================ */
 
 var currentLang = "en";
@@ -13,8 +12,12 @@ var currentLang = "en";
 var LANG_NAMES = { en:"EN", ko:"KO", zh:"ZH" };
 var LANG_FULL_NAMES = { en:"English", ko:"한국어", zh:"中文" };
 
-// 🔒 Worker endpoint (토큰 발급 + 폼 제출 공통)
+// 🔒 Worker endpoint
 var WORKER_ENDPOINT = "https://nexthub-mail-01.sckim805.workers.dev";
+
+// 🔒 Turnstile 토큰 상태
+var turnstileToken = "";
+var turnstileReady = false;
 
 
 /* ================================================================
@@ -30,7 +33,6 @@ function switchLanguage(lang) {
     if (text) el.innerHTML = text;
   });
 
-  /* 데스크탑 드롭다운 */
   var cur = document.getElementById("lang-current");
   if (cur) cur.textContent = LANG_NAMES[lang] || lang;
 
@@ -38,12 +40,10 @@ function switchLanguage(lang) {
     o.classList.toggle("active", o.getAttribute("data-lang") === lang);
   });
 
-  /* 모바일 */
   document.querySelectorAll(".mobile-lang-option").forEach(function(o) {
     o.classList.toggle("active", o.getAttribute("data-lang") === lang);
   });
 
-  /* 헤더 텍스트 */
   var ph = document.querySelector(".lang-panel-header span");
   if (ph) ph.textContent = ({en:"Select Language",ko:"언어 선택",zh:"选择语言"})[lang];
 
@@ -152,6 +152,7 @@ function initActiveMenu() {
   sections.forEach(function(item) { observer.observe(item.section); });
 }
 
+
 /* ================================================================
    2-B. 모바일 슬라이드 패널
    ================================================================ */
@@ -252,6 +253,7 @@ function initSmoothScroll() {
     });
   });
 }
+
 
 /* ================================================================
    5. 숫자 카운터
@@ -376,7 +378,35 @@ function getCSRFToken() {
 
 
 /* ================================================================
-   11. 🔒 문의 폼 (보안 강화 v2)
+   10-B. 🔒 Cloudflare Turnstile 콜백 (Non-interactive)
+   ================================================================
+   - 페이지 로드 시 자동으로 백그라운드 검증
+   - 사용자에게 아무것도 보이지 않음
+   - 검증 완료되면 onTurnstileSuccess 자동 호출
+   ================================================================ */
+function onTurnstileSuccess(token) {
+  turnstileToken = token;
+  turnstileReady = true;
+}
+
+function onTurnstileExpired() {
+  turnstileToken = "";
+  turnstileReady = false;
+  // 자동으로 재검증 시도
+  if (window.turnstile) {
+    turnstile.reset();
+  }
+}
+
+function onTurnstileError() {
+  turnstileToken = "";
+  turnstileReady = false;
+  // 에러 시에도 폼 제출은 가능하도록 (Worker에서 최종 판단)
+}
+
+
+/* ================================================================
+   11. 🔒 문의 폼 (CSRF + Turnstile)
    ================================================================ */
 function initContactForm() {
   var form = document.getElementById("contact-form");
@@ -390,6 +420,17 @@ function initContactForm() {
 
     if (submitBtn.disabled) return;
 
+    // 🔒 Turnstile 토큰 확인
+    if (!turnstileToken) {
+      // Turnstile이 아직 준비 안 된 경우 (네트워크 느린 경우 등)
+      showFormMessage("error", ({
+        en: "Security verification in progress. Please wait a moment and try again.",
+        ko: "보안 인증 진행 중입니다. 잠시 후 다시 시도해 주세요.",
+        zh: "安全验证进行中，请稍候再试。"
+      })[currentLang] || "Security verification in progress. Please wait and try again.");
+      return;
+    }
+
     // 현재 언어를 폼에 반영
     var langField = document.getElementById("form-lang");
     if (langField) langField.value = currentLang;
@@ -402,7 +443,7 @@ function initContactForm() {
       zh: "发送中..."
     })[currentLang] || "Sending...";
 
-    // 🔒 서버에서 토큰 발급받은 후 폼 제출
+    // 🔒 서버에서 CSRF 토큰 발급받은 후 폼 제출
     getCSRFToken().then(function(data) {
       document.getElementById("form-ts").value = data.ts;
       document.getElementById("form-token").value = data.token;
@@ -420,6 +461,13 @@ function initContactForm() {
       if (response.ok) {
         showFormMessage("success");
         form.reset();
+
+        // 🔒 Turnstile 리셋 (다음 제출을 위해)
+        turnstileToken = "";
+        turnstileReady = false;
+        if (window.turnstile) {
+          turnstile.reset();
+        }
       } else {
         return response.json().then(function(data) {
           var detail = "";
@@ -442,6 +490,16 @@ function initContactForm() {
               ko: "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.",
               zh: "请求过多，请稍后再试。"
             })[currentLang] || "Too many requests. Please try again later.");
+          } else if (data.error === "CAPTCHA verification failed") {
+            showFormMessage("error", ({
+              en: "Security verification failed. Please reload and try again.",
+              ko: "보안 인증에 실패했습니다. 페이지를 새로고침 후 다시 시도해 주세요.",
+              zh: "安全验证失败，请刷新页面后重试。"
+            })[currentLang] || "Security verification failed.");
+            // Turnstile 리셋
+            turnstileToken = "";
+            turnstileReady = false;
+            if (window.turnstile) turnstile.reset();
           } else {
             showFormMessage("error", detail);
           }
@@ -468,7 +526,6 @@ function showFormMessage(type, detail) {
   msg.className = "form-result-message form-result-" + type;
 
   if (type === "success") {
-    // 🔒 content.js 값은 우리가 통제하므로 innerHTML 허용
     msg.innerHTML = CONTENT[currentLang]["form_success"]
       || '✅ <strong>Thank you!</strong> We received your inquiry and will respond within 1 business day.';
 
@@ -479,12 +536,10 @@ function showFormMessage(type, detail) {
     } else if (detail && (detail.indexOf("file type") >= 0 || detail.indexOf("Allowed") >= 0)) {
       warnKey = "form_warn_file_type";
     }
-    // 🔒 content.js 값은 우리가 통제하므로 innerHTML 허용
     msg.innerHTML = CONTENT[currentLang][warnKey]
       || '⚠️ <strong>Please check your file.</strong>';
 
   } else {
-    // 🔒 서버 응답 detail은 textContent로 안전하게 처리
     if (detail) {
       var icon = document.createTextNode("❌ ");
       var strong = document.createElement("strong");
@@ -492,7 +547,6 @@ function showFormMessage(type, detail) {
       msg.appendChild(icon);
       msg.appendChild(strong);
     } else {
-      // 🔒 content.js 값은 우리가 통제하므로 innerHTML 허용
       msg.innerHTML = CONTENT[currentLang]["form_error"]
         || '❌ <strong>Something went wrong.</strong> Please email us at <a href="mailto:contact@nexthub.me" style="color:inherit;text-decoration:underline;">contact@nexthub.me</a>';
     }
@@ -539,7 +593,7 @@ function initViewportHeight() {
 
 
 /* ================================================================
-   14. 히어로 패럴랙스 (미세한 마우스 추적)
+   14. 히어로 패럴랙스
    ================================================================ */
 function initHeroParallax() {
   var hero = document.getElementById("section-hero");

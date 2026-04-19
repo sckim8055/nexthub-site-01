@@ -19,6 +19,8 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="shortcut icon" href="favicon.ico" />
   <link rel="stylesheet" href="css/style.css" />
+  <!-- 🔒 Cloudflare Turnstile (Non-interactive) -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 
 <body>
@@ -837,6 +839,18 @@
             <input type="file" id="form-attachment" name="attachment"
                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg,.gif,.txt,.zip" />
             <p class="form-file-note" data-i18n="form_file_note">Max 10MB. PDF, DOC, XLS, PPT, Images, TXT, ZIP</p>
+          </div>
+
+          
+          <!-- 🔒 Cloudflare Turnstile (Non-interactive — 사용자에게 안 보임) -->
+          <div class="cf-turnstile"
+               data-sitekey="0x4AAAAAAC_t9lJTlo9WSFfy"
+               data-callback="onTurnstileSuccess"
+               data-expired-callback="onTurnstileExpired"
+               data-error-callback="onTurnstileError"
+               data-theme="auto"
+               data-size="invisible"
+               style="margin:0;padding:0;">
           </div>
 
           <button type="submit" class="btn-primary" data-i18n="form_submit">Send Inquiry</button>
