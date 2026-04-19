@@ -1,5 +1,11 @@
 /* ================================================================
-   main.js — NextHub (Security Hardened)
+   main.js — NextHub (Security Hardened v2)
+   ================================================================
+   변경 사항:
+   - FORM_SECRET 클라이언트 노출 제거
+   - generateFormToken() 제거 → getCSRFToken() 서버 요청 방식
+   - innerHTML XSS 취약점 수정
+   - 프로덕션 console.log 제거
    ================================================================ */
 
 var currentLang = "en";
@@ -7,8 +13,8 @@ var currentLang = "en";
 var LANG_NAMES = { en:"EN", ko:"KO", zh:"ZH" };
 var LANG_FULL_NAMES = { en:"English", ko:"한국어", zh:"中文" };
 
-// 🔒 CSRF 토큰 시크릿 (worker.js의 FORM_SECRET 환경변수와 동일해야 함)
-var FORM_SECRET = "nxhb2025secure";
+// 🔒 Worker endpoint (토큰 발급 + 폼 제출 공통)
+var WORKER_ENDPOINT = "https://nexthub-mail-01.sckim805.workers.dev";
 
 
 /* ================================================================
@@ -155,10 +161,7 @@ function initHamburger() {
   var panel     = document.getElementById("nav-slide-panel");
   var closeBtn  = document.getElementById("nav-slide-close");
 
-  if (!hamburger || !panel || !backdrop) {
-    console.warn("⚠️ Slide panel elements not found");
-    return;
-  }
+  if (!hamburger || !panel || !backdrop) return;
 
   function openPanel() {
     hamburger.classList.add("open");
@@ -358,23 +361,22 @@ function initMobileStickyCTA() {
 
 
 /* ================================================================
-   10. 🔒 CSRF 토큰 생성 함수
+   10. 🔒 CSRF 토큰 — 서버에서 발급받기
    ================================================================ */
-function generateFormToken(timestamp) {
-  var data = new TextEncoder().encode(timestamp + ":" + FORM_SECRET);
-  return crypto.subtle.digest("SHA-256", data).then(function(hash) {
-    var arr = new Uint8Array(hash);
-    var hex = "";
-    for (var i = 0; i < arr.length; i++) {
-      hex += arr[i].toString(16).padStart(2, "0");
-    }
-    return hex.substring(0, 32);
+function getCSRFToken() {
+  return fetch(WORKER_ENDPOINT + "/csrf-token", {
+    method: "GET",
+    headers: { "Accept": "application/json" }
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error("Token request failed: " + res.status);
+    return res.json();
   });
 }
 
 
 /* ================================================================
-   11. 🔒 문의 폼 (보안 강화)
+   11. 🔒 문의 폼 (보안 강화 v2)
    ================================================================ */
 function initContactForm() {
   var form = document.getElementById("contact-form");
@@ -400,73 +402,60 @@ function initContactForm() {
       zh: "发送中..."
     })[currentLang] || "Sending...";
 
-    // 🔒 토큰 생성 후 폼 제출
-    var ts = String(Date.now());
-    document.getElementById("form-ts").value = ts;
-
-    generateFormToken(ts).then(function(token) {
-      document.getElementById("form-token").value = token;
+    // 🔒 서버에서 토큰 발급받은 후 폼 제출
+    getCSRFToken().then(function(data) {
+      document.getElementById("form-ts").value = data.ts;
+      document.getElementById("form-token").value = data.token;
 
       var endpoint = form.action;
 
-      fetch(endpoint, {
+      return fetch(endpoint, {
         method: "POST",
         body: new FormData(form),
         headers: { "Accept": "application/json" }
-      })
-
-      .then(function(response) {
-        if (response.ok) {
-          showFormMessage("success");
-          form.reset();
-        } else {
-          return response.json().then(function(data) {
-            var detail = "";
-            if (data.errors) {
-              detail = data.errors.map(function(err) {
-                return err.message;
-              }).join(", ");
-            }
-            if (data.error === "File too large" || data.error === "Invalid file type") {
-              showFormMessage("warning", detail);
-            } else if (data.error === "Invalid token" || data.error === "Token expired") {
-              // 🔒 토큰 오류 시 사용자에게 안내
-              showFormMessage("error", ({
-                en: "Session expired. Please reload the page and try again.",
-                ko: "세션이 만료되었습니다. 페이지를 새로고침 후 다시 시도해 주세요.",
-                zh: "会话已过期。请刷新页面后重试。"
-              })[currentLang] || "Session expired. Please reload and try again.");
-            } else if (data.error === "Too many requests") {
-              // 🔒 Rate limit 오류
-              showFormMessage("error", ({
-                en: "Too many requests. Please try again later.",
-                ko: "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.",
-                zh: "请求过多，请稍后再试。"
-              })[currentLang] || "Too many requests. Please try again later.");
-            } else {
-              showFormMessage("error", detail);
-            }
-          });
-        }
-      })
-
-      .catch(function(err) {
-        console.error("Form submission error:", err);
-        showFormMessage("error");
-      })
-      .finally(function() {
-        submitBtn.disabled = false;
-        submitBtn.style.opacity = "1";
-        submitBtn.textContent = originalText;
       });
+    })
 
-    }).catch(function(err) {
-      // 🔒 토큰 생성 실패 시 (crypto API 미지원 등)
-      console.error("Token generation error:", err);
+    .then(function(response) {
+      if (response.ok) {
+        showFormMessage("success");
+        form.reset();
+      } else {
+        return response.json().then(function(data) {
+          var detail = "";
+          if (data.errors) {
+            detail = data.errors.map(function(err) {
+              return err.message;
+            }).join(", ");
+          }
+          if (data.error === "File too large" || data.error === "Invalid file type") {
+            showFormMessage("warning", detail);
+          } else if (data.error === "Invalid token" || data.error === "Token expired") {
+            showFormMessage("error", ({
+              en: "Session expired. Please reload the page and try again.",
+              ko: "세션이 만료되었습니다. 페이지를 새로고침 후 다시 시도해 주세요.",
+              zh: "会话已过期。请刷新页面后重试。"
+            })[currentLang] || "Session expired. Please reload and try again.");
+          } else if (data.error === "Too many requests") {
+            showFormMessage("error", ({
+              en: "Too many requests. Please try again later.",
+              ko: "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.",
+              zh: "请求过多，请稍后再试。"
+            })[currentLang] || "Too many requests. Please try again later.");
+          } else {
+            showFormMessage("error", detail);
+          }
+        });
+      }
+    })
+
+    .catch(function(err) {
+      showFormMessage("error");
+    })
+    .finally(function() {
       submitBtn.disabled = false;
       submitBtn.style.opacity = "1";
       submitBtn.textContent = originalText;
-      showFormMessage("error");
     });
   });
 }
@@ -479,6 +468,7 @@ function showFormMessage(type, detail) {
   msg.className = "form-result-message form-result-" + type;
 
   if (type === "success") {
+    // 🔒 content.js 값은 우리가 통제하므로 innerHTML 허용
     msg.innerHTML = CONTENT[currentLang]["form_success"]
       || '✅ <strong>Thank you!</strong> We received your inquiry and will respond within 1 business day.';
 
@@ -489,14 +479,20 @@ function showFormMessage(type, detail) {
     } else if (detail && (detail.indexOf("file type") >= 0 || detail.indexOf("Allowed") >= 0)) {
       warnKey = "form_warn_file_type";
     }
+    // 🔒 content.js 값은 우리가 통제하므로 innerHTML 허용
     msg.innerHTML = CONTENT[currentLang][warnKey]
       || '⚠️ <strong>Please check your file.</strong>';
 
   } else {
-    // 🔒 detail이 있으면 우선 사용 (토큰/레이트리밋 등 커스텀 메시지)
+    // 🔒 서버 응답 detail은 textContent로 안전하게 처리
     if (detail) {
-      msg.innerHTML = '❌ <strong>' + detail + '</strong>';
+      var icon = document.createTextNode("❌ ");
+      var strong = document.createElement("strong");
+      strong.textContent = detail;
+      msg.appendChild(icon);
+      msg.appendChild(strong);
     } else {
+      // 🔒 content.js 값은 우리가 통제하므로 innerHTML 허용
       msg.innerHTML = CONTENT[currentLang]["form_error"]
         || '❌ <strong>Something went wrong.</strong> Please email us at <a href="mailto:contact@nexthub.me" style="color:inherit;text-decoration:underline;">contact@nexthub.me</a>';
     }
@@ -600,7 +596,4 @@ document.addEventListener("DOMContentLoaded", function() {
   initTouchDetection();
   initViewportHeight();
   initHeroParallax();
-
-  console.log("✅ NextHub loaded (Security Hardened)");
-  console.log("🌐 Lang:", currentLang);
 });

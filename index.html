@@ -765,7 +765,7 @@
 
       <!-- 문의 폼 -->
       <div class="contact-grid">
-        <!-- 🔒 enctype 추가 -->
+        <!-- 🔒 honeypot 필드 개선 — 봇이 못 알아채도록 이름 변경 -->
         <form class="contact-form" id="contact-form"
               action="https://nexthub-mail-01.sckim805.workers.dev"
               method="POST"
@@ -773,10 +773,19 @@
 
           <input type="hidden" name="_subject" value="[NextHub] New Inquiry" />
           <input type="hidden" name="_lang" id="form-lang" value="en" />
-          <input type="text" name="_gotcha" style="display:none" />
-          <!-- 🔒 CSRF 토큰 필드 추가 -->
+
+          <!-- 🔒 Honeypot: 사람에게는 보이지 않고, 봇만 채우는 필드 -->
+          <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
+            <label for="website">Website</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+          </div>
+          <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
+
+          <!-- 🔒 CSRF 토큰 필드 (서버에서 발급받아 채움) -->
           <input type="hidden" name="_token" id="form-token" value="" />
           <input type="hidden" name="_ts" id="form-ts" value="" />
+
+
 
           <div class="form-row">
             <div class="form-group">
