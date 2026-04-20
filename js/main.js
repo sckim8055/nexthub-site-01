@@ -500,7 +500,8 @@ function initContactForm() {
   var form = document.getElementById("contact-form");
   if (!form) return;
 
-  // 입력 시 해당 필드 에러 제거
+  var isSubmitting = false;
+
   form.querySelectorAll("input, textarea, select").forEach(function(field) {
     field.addEventListener("input", function() {
       var group = this.closest(".form-group");
@@ -523,81 +524,69 @@ function initContactForm() {
   form.addEventListener("submit", function(e) {
     e.preventDefault();
 
+    if (isSubmitting) return;
+
     var submitBtn = form.querySelector('button[type="submit"]');
     var originalText = submitBtn.textContent;
+    // ★★★ content.js 참조 ★★★
+    var t = CONTENT[currentLang] || CONTENT.en;
 
     if (submitBtn.disabled) return;
 
-    // 🔒 커스텀 유효성 검사
     if (!validateForm(form)) {
       return;
     }
 
-    // 🔒 Turnstile 토큰 확인
-    if (!turnstileToken) {
-      showFormMessage("error", ({
-        en: "Security verification in progress. Please wait a moment and try again.",
-        ko: "보안 인증 진행 중입니다. 잠시 후 다시 시도해 주세요.",
-        zh: "安全验证进行中，请稍候再试。"
-      })[currentLang] || "Security verification in progress. Please wait and try again.");
-      return;
-    }
-
-    // 현재 언어를 폼에 반영
     var langField = document.getElementById("form-lang");
     if (langField) langField.value = currentLang;
 
     submitBtn.disabled = true;
     submitBtn.style.opacity = "0.7";
-    submitBtn.textContent = ({
-      en: "Sending...",
-      ko: "전송 중...",
-      zh: "发送中..."
-    })[currentLang] || "Sending...";
+    // ★★★ Before: 인라인 3개국어 → After: content.js 참조 ★★★
+    submitBtn.textContent = t.form_sending;
 
-    // ★★★ 수정: 제출 전에 현재 Turnstile 토큰을 로컬 변수에 저장 ★★★
-    var savedTurnstileToken = turnstileToken;
+    isSubmitting = true;
 
-    // 🔒 서버에서 CSRF 토큰 발급받은 후 폼 제출
-    getCSRFToken().then(function(data) {
-      document.getElementById("form-ts").value = data.ts;
-      document.getElementById("form-token").value = data.token;
+    waitForTurnstileToken(5000).then(function(token) {
 
-      var endpoint = form.action;
+      if (!token) {
+        // ★★★ Before: 인라인 3개국어 → After: content.js 참조 ★★★
+        showFormMessage("error", t.form_turnstile_fail);
+        return Promise.reject("no-turnstile");
+      }
 
-      // ★★★ 수정: FormData 생성 후 Turnstile 토큰을 수동으로 덮어쓰기 ★★★
-      // form.reset() 이후 Turnstile hidden input이 비어있을 수 있으므로
-      // 저장해둔 토큰을 강제로 설정
-      var fd = new FormData(form);
-      fd.set("cf-turnstile-response", savedTurnstileToken);
+      var savedTurnstileToken = token;
 
-      return fetch(endpoint, {
-        method: "POST",
-        body: fd,
-        headers: { "Accept": "application/json" }
+      return getCSRFToken().then(function(data) {
+        document.getElementById("form-ts").value = data.ts;
+        document.getElementById("form-token").value = data.token;
+
+        var endpoint = form.action;
+        var fd = new FormData(form);
+        fd.set("cf-turnstile-response", savedTurnstileToken);
+
+        return fetch(endpoint, {
+          method: "POST",
+          body: fd,
+          headers: { "Accept": "application/json" }
+        });
       });
     })
 
     .then(function(response) {
+      if (!response) return;
+
       if (response.ok) {
         showFormMessage("success");
-
-        // ★★★ 수정: form.reset() 대신 사용자 필드만 수동 리셋 ★★★
-        // form.reset()은 Turnstile의 숨겨진 input까지 클리어하므로 사용 금지
         resetFormFields(form);
         clearFieldErrors();
 
-        // ★★★ 수정: Turnstile을 안전하게 리셋 ★★★
         turnstileToken = "";
         turnstileReady = false;
         if (window.turnstile) {
-          // 폼 내의 Turnstile 위젯 컨테이너를 지정하여 리셋
           var turnstileEl = form.querySelector(".cf-turnstile");
-          if (turnstileEl) {
-            turnstile.reset(turnstileEl);
-          } else {
-            turnstile.reset();
-          }
+          if (turnstileEl) turnstile.reset(turnstileEl);
+          else turnstile.reset();
         }
 
       } else {
@@ -608,27 +597,21 @@ function initContactForm() {
               return err.message;
             }).join(", ");
           }
+
           if (data.error === "File too large" || data.error === "Invalid file type") {
             showFormMessage("warning", detail);
+
           } else if (data.error === "Invalid token" || data.error === "Token expired") {
-            showFormMessage("error", ({
-              en: "Session expired. Please reload the page and try again.",
-              ko: "세션이 만료되었습니다. 페이지를 새로고침 후 다시 시도해 주세요.",
-              zh: "会话已过期。请刷新页面后重试。"
-            })[currentLang] || "Session expired. Please reload and try again.");
+            // ★★★ content.js 참조 ★★★
+            showFormMessage("error", t.form_session_expired);
+
           } else if (data.error === "Too many requests") {
-            showFormMessage("error", ({
-              en: "Too many requests. Please try again later.",
-              ko: "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.",
-              zh: "请求过多，请稍后再试。"
-            })[currentLang] || "Too many requests. Please try again later.");
+            // ★★★ content.js 참조 ★★★
+            showFormMessage("error", t.form_rate_limit);
+
           } else if (data.error === "CAPTCHA verification failed") {
-            showFormMessage("error", ({
-              en: "Security verification failed. Please reload and try again.",
-              ko: "보안 인증에 실패했습니다. 페이지를 새로고침 후 다시 시도해 주세요.",
-              zh: "安全验证失败，请刷新页面后重试。"
-            })[currentLang] || "Security verification failed.");
-            // ★★★ 수정: CAPTCHA 실패 시에도 안전하게 리셋 ★★★
+            // ★★★ content.js 참조 ★★★
+            showFormMessage("error", t.form_captcha_fail);
             turnstileToken = "";
             turnstileReady = false;
             if (window.turnstile) {
@@ -636,6 +619,7 @@ function initContactForm() {
               if (te) turnstile.reset(te);
               else turnstile.reset();
             }
+
           } else {
             showFormMessage("error", detail);
           }
@@ -644,9 +628,12 @@ function initContactForm() {
     })
 
     .catch(function(err) {
-      showFormMessage("error");
+      if (err !== "no-turnstile") {
+        showFormMessage("error");
+      }
     })
     .finally(function() {
+      isSubmitting = false;
       submitBtn.disabled = false;
       submitBtn.style.opacity = "1";
       submitBtn.textContent = originalText;

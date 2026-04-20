@@ -374,6 +374,16 @@ const CONTENT = {
     contact_hours_label: "Business Hours",
     contact_hours: "Mon–Fri, 09:00–18:00 KST",
 
+         
+   // 폼 시스템 메시지 (보안/에러)
+      // ----------------------------------------
+    form_turnstile_wait: "Security verification in progress. Please wait a moment and try again.",
+    form_turnstile_fail: "Security verification failed. Please reload the page and try again.",
+    form_session_expired: "Session expired. Please reload the page and try again.",
+    form_rate_limit: "Too many requests. Please try again later.",
+    form_captcha_fail: "Security verification failed. Please reload and try again.",
+    form_sending: "Sending...",
+
     /* ----------------------------------------
        푸터 — #footer
        ---------------------------------------- */
@@ -729,6 +739,14 @@ const CONTENT = {
     contact_hours_label: "업무 시간",
     contact_hours: "월~금, 09:00–18:00",
 
+  // 폼 시스템 메시지 (보안/에러)  
+    form_turnstile_wait: "보안 인증 진행 중입니다. 잠시 후 다시 시도해 주세요.",
+    form_turnstile_fail: "보안 인증에 실패했습니다. 페이지를 새로고침 후 다시 시도해 주세요.",
+    form_session_expired: "세션이 만료되었습니다. 페이지를 새로고침 후 다시 시도해 주세요.",
+    form_rate_limit: "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.",
+    form_captcha_fail: "보안 인증에 실패했습니다. 페이지를 새로고침 후 다시 시도해 주세요.",
+    form_sending: "전송 중...",
+
     /* ----------------------------------------
        푸터
        ---------------------------------------- */
@@ -1083,6 +1101,15 @@ const CONTENT = {
     contact_hours_label: "工作时间",
     contact_hours: "周一至周五 09:00-18:00 韩国时间",
 
+    
+  // 폼 시스템 메시지 (보안/에러) 
+   
+    form_turnstile_wait: "安全验证进行中，请稍候再试。",
+    form_turnstile_fail: "安全验证失败，请刷新页面后重试。",
+    form_session_expired: "会话已过期。请刷新页面后重试。",
+    form_rate_limit: "请求过多，请稍后再试。",
+    form_captcha_fail: "安全验证失败，请刷新页面后重试。",
+    form_sending: "发送中...",
     /* ----------------------------------------
        页脚
        ---------------------------------------- */
