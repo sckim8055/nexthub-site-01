@@ -1572,7 +1572,7 @@ body.nav-panel-open { overflow: hidden !important; position: relative; }
 
   /* 네비: 모바일 */
   .nav-center-menu { display:none; }
-  .nav-hamburger { display:flex; }
+  .nav-hamburger { margin-left: 4px; }
   .desktop-only { display:none !important; }
 
   .nav-inner { padding:0 var(--space-md); }
@@ -1585,7 +1585,7 @@ body.nav-panel-open { overflow: hidden !important; position: relative; }
   .lang-globe-icon { width:20px; height:20px; }
   .lang-panel { right:0; min-width:190px; }
 
-  .nav-right { gap:4px; }
+  .nav-right { margin-left: auto; gap:2px; }
 
   /* 히어로 eyebrow 모바일 */
   .hero-eyebrow-wrap { gap:var(--space-sm); }
