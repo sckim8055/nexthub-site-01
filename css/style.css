@@ -1572,10 +1572,7 @@ body.nav-panel-open { overflow: hidden !important; position: relative; }
 
   /* 네비: 모바일 */
   .nav-center-menu { display:none; }
-  .nav-hamburger {
-    display: flex;
-    margin-left: 2px; /* nav-right와의 간격 */
-  }
+  .nav-hamburger { margin-left: 2px; }
   .desktop-only { display:none !important; }
 
   /* ★★★ 추가: 3개 아이콘 모두 오른쪽 정렬 ★★★ */
@@ -1583,7 +1580,6 @@ body.nav-panel-open { overflow: hidden !important; position: relative; }
     display: flex;
     align-items: center;
     justify-content: flex-start; /* space-between 대신 */
-    padding: 0 16px;  /* 기존 var(--space-md)=24px → 16px으로 줄임 */
   }
 
   /* 언어 드롭다운 모바일 */
@@ -1593,16 +1589,11 @@ body.nav-panel-open { overflow: hidden !important; position: relative; }
   }
   .lang-globe-icon { width:20px; height:20px; }
   .lang-panel { right:0; min-width:190px; }
-
+  
   .nav-logo {
     margin-right: auto; /* 로고만 왼쪽, 나머지 오른쪽으로 밀기 */
   }
-  .nav-right {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    margin-right: 0;
-  }
+  .nav-right { gap:2px; }
 
   /* 히어로 eyebrow 모바일 */
   .hero-eyebrow-wrap { gap:var(--space-sm); }
