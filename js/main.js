@@ -491,6 +491,44 @@ function resetFormFields(form) {
   }
 }
 
+/* ================================================================
+   12-C. ★ Turnstile 토큰 대기 함수
+   모바일에서 Turnstile 리셋 후 새 토큰 발급까지 시간이 걸릴 수 있음
+   최대 maxWait(ms)까지 500ms 간격으로 토큰 확인
+   ================================================================ */
+function waitForTurnstileToken(maxWait) {
+  return new Promise(function(resolve) {
+    // 이미 토큰이 있으면 즉시 반환
+    if (turnstileToken) {
+      resolve(turnstileToken);
+      return;
+    }
+
+    var elapsed = 0;
+    var interval = 500;
+
+    var checker = setInterval(function() {
+      elapsed += interval;
+
+      if (turnstileToken) {
+        clearInterval(checker);
+        resolve(turnstileToken);
+        return;
+      }
+
+      if (elapsed >= maxWait) {
+        clearInterval(checker);
+        if (window.turnstile) {
+          var form = document.getElementById("contact-form");
+          var el = form ? form.querySelector(".cf-turnstile") : null;
+          if (el) turnstile.reset(el);
+          else turnstile.reset();
+        }
+        resolve(null);
+      }
+    }, interval);
+  });
+}
 
 /* ================================================================
    12. 🔒 문의 폼 (CSRF + Turnstile + 커스텀 유효성)
