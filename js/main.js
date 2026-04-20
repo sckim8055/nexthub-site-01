@@ -47,6 +47,9 @@ function switchLanguage(lang) {
   localStorage.setItem("nexthub-lang", lang);
 
   clearFieldErrors();
+
+  // ★★★ 테마 라벨도 언어에 맞게 업데이트 ★★★
+  updateThemeLabels();
 }
 
 function toggleLangDropdown() {
@@ -796,6 +799,7 @@ function initHeroParallax() {
    16. 초기화
    ================================================================ */
 document.addEventListener("DOMContentLoaded", function() {
+  initThemeToggle();        // ★★★ 테마를 가장 먼저 초기화 ★★★
   initLanguageSwitcher();
   initNavScroll();
   initActiveMenu();
@@ -812,3 +816,94 @@ document.addEventListener("DOMContentLoaded", function() {
   initViewportHeight();
   initHeroParallax();
 });
+
+/* ================================================================
+   17. 테마 전환 (다크/라이트)
+   ================================================================ */
+var currentTheme = "dark";
+
+var THEME_LABELS = {
+  en: { dark: "Switch to Light Mode", light: "Switch to Dark Mode", title: "Theme" },
+  ko: { dark: "라이트 모드로 전환", light: "다크 모드로 전환", title: "테마" },
+  zh: { dark: "切换到浅色模式", light: "切换到深色模式", title: "主题" }
+};
+
+function setTheme(theme) {
+  currentTheme = theme;
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("nexthub-theme", theme);
+  updateThemeLabels();
+}
+
+function toggleTheme() {
+  var newTheme = currentTheme === "dark" ? "light" : "dark";
+  setTheme(newTheme);
+}
+
+function updateThemeLabels() {
+  var labels = THEME_LABELS[currentLang] || THEME_LABELS.en;
+
+  // 모바일 테마 버튼 텍스트
+  var mobileText = document.getElementById("mobile-theme-text");
+  if (mobileText) {
+    mobileText.textContent = currentTheme === "dark" ? labels.dark : labels.light;
+  }
+
+  // 모바일 테마 라벨
+  var mobileLabel = document.getElementById("mobile-theme-label");
+  if (mobileLabel) {
+    mobileLabel.textContent = labels.title;
+  }
+
+  // 데스크탑 토글 aria-label
+  var desktopToggle = document.getElementById("theme-toggle");
+  if (desktopToggle) {
+    desktopToggle.setAttribute("aria-label",
+      currentTheme === "dark" ? labels.dark : labels.light
+    );
+  }
+}
+
+function initThemeToggle() {
+  // 저장된 테마 불러오기
+  var savedTheme = localStorage.getItem("nexthub-theme");
+
+  if (savedTheme && (savedTheme === "dark" || savedTheme === "light")) {
+    setTheme(savedTheme);
+  } else {
+    // 시스템 설정 감지
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
+      setTheme("light");
+    } else {
+      setTheme("dark");
+    }
+  }
+
+  // 데스크탑 토글 버튼
+  var desktopToggle = document.getElementById("theme-toggle");
+  if (desktopToggle) {
+    desktopToggle.addEventListener("click", function(e) {
+      e.stopPropagation();
+      toggleTheme();
+    });
+  }
+
+  // 모바일 토글 버튼
+  var mobileToggle = document.getElementById("mobile-theme-toggle");
+  if (mobileToggle) {
+    mobileToggle.addEventListener("click", function(e) {
+      e.stopPropagation();
+      toggleTheme();
+    });
+  }
+
+  // 시스템 테마 변경 감지
+  if (window.matchMedia) {
+    window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", function(e) {
+      // 사용자가 수동으로 설정하지 않았을 때만 자동 적용
+      if (!localStorage.getItem("nexthub-theme")) {
+        setTheme(e.matches ? "light" : "dark");
+      }
+    });
+  }
+}
