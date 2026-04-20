@@ -1572,7 +1572,7 @@ body.nav-panel-open { overflow: hidden !important; position: relative; }
 
   /* 네비: 모바일 */
   .nav-center-menu { display:none; }
-  .nav-hamburger { margin-left: 2px; }
+  .nav-hamburger { display:flex; margin-left: 2px; }
   .desktop-only { display:none !important; }
 
   /* ★★★ 추가: 3개 아이콘 모두 오른쪽 정렬 ★★★ */
