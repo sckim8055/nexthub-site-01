@@ -1581,12 +1581,12 @@ body.nav-panel-open { overflow: hidden !important; position: relative; }
     align-items: center;
     justify-content: flex-start; /* space-between 대신 */
   }
-
+  /* 모바일 toggle과 언어선택의 간격 조정 */
   .mobile-theme-section, .mobile-lang-list {
-    margin-top: 10px; /* 언어 선택과 테마 토글 사이 간격 */
+    margin-top: 15px; /* 언어 선택과 테마 토글 사이 간격 */
   }
   .mobile-lang-label {
-    margin-bottom: 0;
+    margin-bottom: 8px;
   }
   /* 언어 드롭다운 모바일 */
   .lang-current, .lang-chevron { display:none; }
