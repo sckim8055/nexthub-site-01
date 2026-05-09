@@ -454,7 +454,7 @@ section {
 /* 메가메뉴 */
 .mega-menu {
   position:absolute; top:100%; left:50%; transform:translateX(-50%);
-  min-width:720px; padding-top:0;
+  min-width:820px; padding-top:0;
   opacity:0; visibility:hidden;
   transition:all 0.3s var(--transition-spring);
   pointer-events:none; z-index:1100;
@@ -497,8 +497,8 @@ section {
 }
 .mega-link:hover .mega-link-icon { background:rgba(6,150,215,0.2); }
 
-.mega-link-title { display:block; font-size:0.88rem; font-weight:600; line-height:1.3; }
-.mega-link-desc { display:block; font-size:0.75rem; color:var(--theme-text-secondary); line-height:1.4; margin-top:2px; }
+.mega-link-title { display:block; font-size:0.88rem; font-weight:600; line-height:1.3; word-break:keep-all; }
+.mega-link-desc { display:block; font-size:0.75rem; color:var(--theme-text-secondary); line-height:1.4; margin-top:2px; word-break:keep-all; }
 
 .mega-col-cta {
   background:var(--theme-mega-cta-bg); display:flex; align-items:center;
