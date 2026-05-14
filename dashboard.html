@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="KOR Device Management Dashboard — Real-time notebook & workstation inventory tracking">
+  <title>KOR Device Dashboard | NextHub</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+<div class="dashboard-bg" aria-hidden="true"></div>
+
+<!-- ══ Header ══ -->
+<header class="dash-header" id="dashHeader">
+  <div class="dash-header-left">
+    <div class="dash-logo"><span class="lo-n">Next</span><span class="lo-h">Hub</span></div>
+    <span class="dash-title">📊 KOR Device Management Dashboard</span>
+  </div>
+  <div class="dash-header-right">
+    <div class="loading-indicator" id="loadingIndicator">
+      <div class="spinner"></div><span>Loading…</span>
+    </div>
+    <button class="refresh-toggle" id="refreshToggle" title="Auto Refresh (5s)">
+      <span class="rf-label">Auto Refresh</span>
+      <div class="toggle-switch"><div class="toggle-dot"></div></div>
+    </button>
+    <div class="last-updated" id="lastUpdated">
+      <span class="status-dot"></span> --
+    </div>
+  </div>
+</header>
+
+<!-- ══ Main ══ -->
+<main class="dash-main" id="dashMain">
+
+  <!-- Error state -->
+  <div class="error-msg" id="errorState" style="display:none">
+    <div class="err-icon">⚠️</div>
+    <h3>데이터를 불러올 수 없습니다</h3>
+    <p id="errorText">Google Sheets 연결을 확인해주세요.</p>
+    <button class="retry-btn" onclick="fetchData()">다시 시도</button>
+  </div>
+
+  <!-- KPI Row -->
+  <section class="kpi-grid" id="kpiGrid">
+    <div class="kpi-card blue">
+      <div class="kpi-icon">💻</div>
+      <div class="kpi-value" id="kpiTotal">-</div>
+      <div class="kpi-label">전체 장비</div>
+      <div class="kpi-sub" id="kpiTotalSub"></div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-icon">✅</div>
+      <div class="kpi-value" id="kpiInUse">-</div>
+      <div class="kpi-label">사용 중 (In Use)</div>
+      <div class="kpi-sub" id="kpiInUseSub"></div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-icon">📦</div>
+      <div class="kpi-value" id="kpiInStock">-</div>
+      <div class="kpi-label">재고 (In Stock)</div>
+      <div class="kpi-sub" id="kpiInStockSub"></div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-icon">🔄</div>
+      <div class="kpi-value" id="kpiRetired">-</div>
+      <div class="kpi-label">퇴역 (Retired)</div>
+      <div class="kpi-sub" id="kpiRetiredSub"></div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-icon">🗑️</div>
+      <div class="kpi-value" id="kpiDisposed">-</div>
+      <div class="kpi-label">폐기 (Disposed)</div>
+      <div class="kpi-sub" id="kpiDisposedSub"></div>
+    </div>
+  </section>
+
+  <!-- Charts Row -->
+  <section class="chart-grid" id="chartGrid">
+    <!-- Hardware Status Donut -->
+    <div class="chart-card">
+      <div class="chart-title"><span class="icon">🎯</span> Hardware Status 분포</div>
+      <div class="donut-wrap">
+        <svg class="donut-svg" viewBox="0 0 160 160" id="donutHW"></svg>
+        <div class="donut-legend" id="legendHW"></div>
+      </div>
+    </div>
+    <!-- Location Bar Chart -->
+    <div class="chart-card">
+      <div class="chart-title"><span class="icon">📍</span> 위치별 장비 현황 (Top 8)</div>
+      <div class="bar-chart" id="barLocation"></div>
+    </div>
+    <!-- Lifecycle Donut -->
+    <div class="chart-card">
+      <div class="chart-title"><span class="icon">♻️</span> Lifecycle Stage 분포</div>
+      <div class="donut-wrap">
+        <svg class="donut-svg" viewBox="0 0 160 160" id="donutLC"></svg>
+        <div class="donut-legend" id="legendLC"></div>
+      </div>
+    </div>
+    <!-- Account Status Bar -->
+    <div class="chart-card">
+      <div class="chart-title"><span class="icon">👤</span> Computer Account 현황</div>
+      <div class="bar-chart" id="barAccount"></div>
+    </div>
+  </section>
+
+  <!-- Data Table -->
+  <section class="table-section" id="tableSection">
+    <div class="table-header">
+      <h3>📋 장비 목록 (<span id="filteredCount">0</span>)</h3>
+      <div class="table-controls">
+        <input type="text" class="search-box" id="searchBox" placeholder="🔍 이름, 시리얼, 사용자 검색…">
+        <select class="filter-select" id="filterStatus">
+          <option value="">전체 Status</option>
+        </select>
+        <select class="filter-select" id="filterLocation">
+          <option value="">전체 Location</option>
+        </select>
+      </div>
+    </div>
+    <div class="table-wrap" style="max-height:500px;overflow-y:auto">
+      <table class="data-table" id="dataTable">
+        <thead>
+          <tr>
+            <th data-col="name">Name <span class="sort-icon">▲</span></th>
+            <th data-col="serial_number">Serial # <span class="sort-icon">▲</span></th>
+            <th data-col="category">Category <span class="sort-icon">▲</span></th>
+            <th data-col="hardware_status">HW Status <span class="sort-icon">▲</span></th>
+            <th data-col="life_cycle_stage_status">Lifecycle <span class="sort-icon">▲</span></th>
+            <th data-col="u_computer_account_status">Account <span class="sort-icon">▲</span></th>
+            <th data-col="u_location_text">Location <span class="sort-icon">▲</span></th>
+            <th data-col="u_last_user">Last User <span class="sort-icon">▲</span></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+    <div class="table-footer">
+      <span id="tableInfo">-</span>
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="dash-footer">
+  © 2025 NextHub — KOR Device Management Dashboard
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   Dashboard Logic
+   ═══════════════════════════════════════════════════════════════
+   
+   [데이터 소스 설정 방법]
+   ─────────────────────────────────────────────
+   ★ Google Apps Script Web App 방식 (권장 — 시트 비공개 유지)
+   
+   1. Google Sheets 열기 → 확장 프로그램 → Apps Script
+   2. apps_script_setup.js 코드를 Apps Script에 붙여넣기
+   3. 배포 → 새 배포 → 웹 앱
+      - 실행 사용자: "나"
+      - 액세스 권한: "모든 사용자" (시트 자체는 비공개)
+   4. 배포 후 받은 URL을 아래 APPS_SCRIPT_URL에 설정
+   
+   ※ 스프레드시트는 비공개 유지, 스크립트만 데이터를 JSON으로 전달
+   ═══════════════════════════════════════════════════════════════ */
+
+// ── Config ──
+// ★ 아래 URL을 Google Apps Script 배포 후 받은 Web App URL로 변경하세요
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5xs4EBVFSNllyAh_019RJ38EW5M0hFOILTKqYFZWN5PcskPd5h1MRfV3d2ycICR7YtQ/exec';
+const API_KEY = '';          // apps_script_setup.js에서 설정한 키와 동일하게 (선택사항)
+
+const ROWS_PER_PAGE = 30;
+let allData = [];
+let filteredData = [];
+let currentPage = 1;
+let sortCol = '';
+let sortAsc = true;
+let autoRefresh = false;
+let refreshTimer = null;
+
+// ── Color palette ──
+const COLORS = {
+  'In Use': '#3b82f6', 'In Stock': '#10b981', 'Retired': '#f59e0b',
+  'Disposed': '#ef4444', 'Available': '#06b6d4', 'Scrapped': '#64748b',
+  'Lost': '#ec4899', 'Active': '#10b981', 'Disabled': '#64748b',
+};
+const PALETTE = ['#3b82f6','#10b981','#f59e0b','#ef4444','#06b6d4','#8b5cf6','#ec4899','#64748b','#f97316','#14b8a6'];
+
+// ── Fetch Data ──
+async function fetchData() {
+  const loader = document.getElementById('loadingIndicator');
+  const errDiv = document.getElementById('errorState');
+  loader.classList.add('show');
+  errDiv.style.display = 'none';
+
+  try {
+    if (!APPS_SCRIPT_URL) {
+      throw new Error('APPS_SCRIPT_URL이 설정되지 않았습니다. dashboard.html의 Config 섹션을 확인하세요.');
+    }
+
+    const url = API_KEY
+      ? `${APPS_SCRIPT_URL}?key=${encodeURIComponent(API_KEY)}`
+      : APPS_SCRIPT_URL;
+
+    const resp = await fetch(url, { redirect: 'follow' });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const json = await resp.json();
+
+    if (json.error) throw new Error(json.error);
+    if (!json.data || !json.data.length) throw new Error('No data returned');
+
+    allData = json.data;
+
+    buildFilters();
+    applyFilters();
+    renderKPIs();
+    renderCharts();
+    updateTimestamp();
+
+    document.getElementById('kpiGrid').style.display = '';
+    document.getElementById('chartGrid').style.display = '';
+    document.getElementById('tableSection').style.display = '';
+
+  } catch (err) {
+    console.error('Fetch error:', err);
+    if (allData.length === 0) {
+      errDiv.style.display = '';
+      document.getElementById('errorText').innerHTML =
+        '<strong>데이터를 불러올 수 없습니다.</strong><br>' +
+        '<small style="color:#94a3b8;line-height:1.8">' + err.message + '<br><br>' +
+        '📋 설정 방법:<br>' +
+        '1. Google Sheets → 확장 프로그램 → Apps Script<br>' +
+        '2. apps_script_setup.js 코드 붙여넣기<br>' +
+        '3. 배포 → 새 배포 → 웹 앱 → URL 복사<br>' +
+        '4. dashboard.html의 APPS_SCRIPT_URL에 붙여넣기</small>';
+    }
+  } finally {
+    loader.classList.remove('show');
+  }
+}
+
+// ── Timestamp ──
+function updateTimestamp() {
+  const now = new Date();
+  const ts = now.toLocaleString('ko-KR', {hour12:false, month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  document.getElementById('lastUpdated').innerHTML = '<span class="status-dot"></span> ' + ts;
+}
+
+// ── KPIs ──
+function renderKPIs() {
+  const total = allData.length;
+  const hwCounts = countBy(allData, 'hardware_status');
+  const inUse = hwCounts['In Use'] || 0;
+  const inStock = hwCounts['In Stock'] || 0;
+  const retired = hwCounts['Retired'] || 0;
+  const lcCounts = countBy(allData, 'life_cycle_stage_status');
+  const disposed = lcCounts['Disposed'] || 0;
+
+  animateValue('kpiTotal', total);
+  animateValue('kpiInUse', inUse);
+  animateValue('kpiInStock', inStock);
+  animateValue('kpiRetired', retired);
+  animateValue('kpiDisposed', disposed);
+
+  setText('kpiInUseSub', pct(inUse, total));
+  setText('kpiInStockSub', pct(inStock, total));
+  setText('kpiRetiredSub', pct(retired, total));
+  setText('kpiDisposedSub', pct(disposed, total));
+  setText('kpiTotalSub', Object.keys(hwCounts).length + ' statuses');
+}
+
+function animateValue(id, target) {
+  const el = document.getElementById(id);
+  const start = parseInt(el.textContent) || 0;
+  if (start === target) return;
+  const duration = 600;
+  const startTime = performance.now();
+  function tick(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(start + (target - start) * eased);
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// ── Charts ──
+function renderCharts() {
+  renderDonut('donutHW', 'legendHW', countBy(allData, 'hardware_status'));
+  renderDonut('donutLC', 'legendLC', countBy(allData, 'life_cycle_stage_status'));
+  renderBarChart('barLocation', countBy(allData, 'u_location_text'), 8);
+  renderBarChart('barAccount', countBy(allData, 'u_computer_account_status'), 5);
+}
+
+function renderDonut(svgId, legendId, data) {
+  const svg = document.getElementById(svgId);
+  const legend = document.getElementById(legendId);
+  svg.innerHTML = '';
+  legend.innerHTML = '';
+
+  const entries = Object.entries(data).sort((a,b) => b[1]-a[1]);
+  const total = entries.reduce((s,e) => s+e[1], 0);
+  if (!total) return;
+
+  const cx = 80, cy = 80, r = 60, stroke = 22;
+  const circ = 2 * Math.PI * r;
+  let offset = 0;
+
+  // Background circle
+  const bg = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  bg.setAttribute('cx',cx); bg.setAttribute('cy',cy); bg.setAttribute('r',r);
+  bg.setAttribute('fill','none'); bg.setAttribute('stroke','rgba(255,255,255,0.04)');
+  bg.setAttribute('stroke-width',stroke); svg.appendChild(bg);
+
+  entries.forEach(([key, val], i) => {
+    const pctVal = val / total;
+    const color = COLORS[key] || PALETTE[i % PALETTE.length];
+    const dashLen = circ * pctVal;
+    const dashGap = circ - dashLen;
+
+    const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('cx',cx); circle.setAttribute('cy',cy); circle.setAttribute('r',r);
+    circle.setAttribute('fill','none'); circle.setAttribute('stroke',color);
+    circle.setAttribute('stroke-width',stroke);
+    circle.setAttribute('stroke-dasharray', `${dashLen} ${dashGap}`);
+    circle.setAttribute('stroke-dashoffset', -offset);
+    circle.setAttribute('transform',`rotate(-90 ${cx} ${cy})`);
+    circle.style.transition = 'stroke-dasharray .8s ease, stroke-dashoffset .8s ease';
+    svg.appendChild(circle);
+    offset += dashLen;
+
+    // Legend
+    legend.innerHTML += `<div class="legend-item">
+      <div class="legend-dot" style="background:${color}"></div>
+      <span class="legend-label">${key || '(Empty)'}</span>
+      <span class="legend-value">${val}</span>
+      <span class="legend-pct">${(pctVal*100).toFixed(1)}%</span>
+    </div>`;
+  });
+
+  // Center text
+  const text = document.createElementNS('http://www.w3.org/2000/svg','text');
+  text.setAttribute('x',cx); text.setAttribute('y',cy-4);
+  text.setAttribute('text-anchor','middle'); text.setAttribute('fill','#f1f5f9');
+  text.setAttribute('font-size','22'); text.setAttribute('font-weight','800');
+  text.textContent = total;
+  svg.appendChild(text);
+
+  const sub = document.createElementNS('http://www.w3.org/2000/svg','text');
+  sub.setAttribute('x',cx); sub.setAttribute('y',cy+14);
+  sub.setAttribute('text-anchor','middle'); sub.setAttribute('fill','#64748b');
+  sub.setAttribute('font-size','10');
+  sub.textContent = 'Total';
+  svg.appendChild(sub);
+}
+
+function renderBarChart(containerId, data, maxBars) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  const entries = Object.entries(data).sort((a,b) => b[1]-a[1]).slice(0, maxBars);
+  if (!entries.length) return;
+  const maxVal = entries[0][1];
+
+  entries.forEach(([key, val], i) => {
+    const pctW = Math.max((val / maxVal) * 100, 8);
+    const color = PALETTE[i % PALETTE.length];
+    container.innerHTML += `<div class="bar-row">
+      <span class="bar-label" title="${key}">${key || '(Empty)'}</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${pctW}%;background:${color}"><span>${val}</span></div>
+      </div>
+      <span class="bar-count">${val}</span>
+    </div>`;
+  });
+}
+
+// ── Filters ──
+function buildFilters() {
+  buildSelect('filterStatus', 'hardware_status');
+  buildSelect('filterLocation', 'u_location_text');
+}
+
+function buildSelect(selectId, field) {
+  const select = document.getElementById(selectId);
+  const current = select.value;
+  const vals = [...new Set(allData.map(d => d[field]).filter(Boolean))].sort();
+  select.innerHTML = `<option value="">전체</option>`;
+  vals.forEach(v => { select.innerHTML += `<option value="${v}">${v}</option>`; });
+  select.value = current;
+}
+
+function applyFilters() {
+  const search = document.getElementById('searchBox').value.toLowerCase();
+  const statusFilter = document.getElementById('filterStatus').value;
+  const locFilter = document.getElementById('filterLocation').value;
+
+  filteredData = allData.filter(d => {
+    if (statusFilter && d['hardware_status'] !== statusFilter) return false;
+    if (locFilter && d['u_location_text'] !== locFilter) return false;
+    if (search) {
+      const hay = [d.name, d.serial_number, d.asset, d.u_last_user, d.u_location_text, d.hardware_status]
+        .join(' ').toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+
+  if (sortCol) {
+    filteredData.sort((a,b) => {
+      const va = (a[sortCol]||'').toLowerCase(), vb = (b[sortCol]||'').toLowerCase();
+      return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+    });
+  }
+
+  currentPage = 1;
+  renderTable();
+}
+
+// ── Table ──
+function renderTable() {
+  const tbody = document.getElementById('tableBody');
+  const totalRows = filteredData.length;
+  const totalPages = Math.ceil(totalRows / ROWS_PER_PAGE) || 1;
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  const start = (currentPage - 1) * ROWS_PER_PAGE;
+  const pageData = filteredData.slice(start, start + ROWS_PER_PAGE);
+
+  document.getElementById('filteredCount').textContent = totalRows;
+
+  tbody.innerHTML = pageData.map(d => `<tr>
+    <td title="${d.name||''}">${d.name||'-'}</td>
+    <td>${d.serial_number||'-'}</td>
+    <td>${d.category||'-'}</td>
+    <td>${statusBadge(d.hardware_status, 'hw')}</td>
+    <td>${statusBadge(d.life_cycle_stage_status, 'lc')}</td>
+    <td>${statusBadge(d.u_computer_account_status, 'acc')}</td>
+    <td title="${d.u_location_text||''}">${truncate(d.u_location_text, 22)}</td>
+    <td>${d.u_last_user||'-'}</td>
+  </tr>`).join('');
+
+  document.getElementById('tableInfo').textContent =
+    `${start+1}–${Math.min(start+ROWS_PER_PAGE, totalRows)} / ${totalRows}건`;
+
+  renderPagination(totalPages);
+}
+
+function statusBadge(val, type) {
+  if (!val) return '<span class="badge badge-scrapped">-</span>';
+  let cls = 'badge-scrapped';
+  const v = val.toLowerCase();
+  if (type === 'hw') {
+    if (v==='in use') cls='badge-inuse'; else if (v==='in stock') cls='badge-instock';
+    else if (v==='retired') cls='badge-retired'; else if (v==='disposed'||v==='scrapped') cls='badge-disposed';
+    else if (v==='available') cls='badge-available'; else if (v==='lost') cls='badge-lost';
+  } else if (type === 'lc') {
+    if (v==='disposed') cls='badge-disposed'; else if (v==='available') cls='badge-available';
+  } else if (type === 'acc') {
+    if (v==='active') cls='badge-active'; else if (v==='disabled') cls='badge-disabled';
+  }
+  return `<span class="badge ${cls}">${val}</span>`;
+}
+
+function renderPagination(totalPages) {
+  const pag = document.getElementById('pagination');
+  if (totalPages <= 1) { pag.innerHTML = ''; return; }
+  let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+  const range = getPageRange(currentPage, totalPages, 5);
+  range.forEach(p => {
+    html += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+  });
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>›</button>`;
+  pag.innerHTML = html;
+}
+
+function goPage(p) { currentPage = p; renderTable(); }
+
+function getPageRange(current, total, maxVisible) {
+  if (total <= maxVisible) return Array.from({length:total},(_,i)=>i+1);
+  let start = Math.max(1, current - Math.floor(maxVisible/2));
+  let end = start + maxVisible - 1;
+  if (end > total) { end = total; start = end - maxVisible + 1; }
+  return Array.from({length:end-start+1},(_,i)=>start+i);
+}
+
+// ── Sorting ──
+document.querySelectorAll('.data-table th[data-col]').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (sortCol === col) sortAsc = !sortAsc;
+    else { sortCol = col; sortAsc = true; }
+    document.querySelectorAll('.data-table th').forEach(t => t.classList.remove('sorted'));
+    th.classList.add('sorted');
+    th.querySelector('.sort-icon').textContent = sortAsc ? '▲' : '▼';
+    applyFilters();
+  });
+});
+
+// ── Event Listeners ──
+document.getElementById('searchBox').addEventListener('input', debounce(applyFilters, 300));
+document.getElementById('filterStatus').addEventListener('change', applyFilters);
+document.getElementById('filterLocation').addEventListener('change', applyFilters);
+
+document.getElementById('refreshToggle').addEventListener('click', function() {
+  autoRefresh = !autoRefresh;
+  this.classList.toggle('active', autoRefresh);
+  if (autoRefresh) {
+    refreshTimer = setInterval(fetchData, 5000);
+  } else {
+    clearInterval(refreshTimer);
+    refreshTimer = null;
+  }
+});
+
+// ── Helpers ──
+function countBy(arr, key) {
+  return arr.reduce((acc, d) => { const v = d[key]||'(Empty)'; acc[v]=(acc[v]||0)+1; return acc; }, {});
+}
+function pct(n, total) { return total ? (n/total*100).toFixed(1)+'%' : '-'; }
+function setText(id, txt) { document.getElementById(id).textContent = txt; }
+function truncate(s, max) { return s && s.length > max ? s.slice(0,max)+'…' : (s||'-'); }
+function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(()=>fn(...a), ms); }; }
+
+// ── Init ──
+fetchData();
+</script>
+
+</body>
+</html>
